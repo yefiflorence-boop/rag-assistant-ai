@@ -59,38 +59,40 @@ for file in files:
         chunks = json.load(f)
 
     for chunk in chunks:
-        voir=embedding_function.embed_documents(chunk["content"])
-        print(f"\nLecture : {voir[0]}")
-        #document = Document(
+        # voir=embedding_function.embed_documents(chunk["content"])
+        #print(f"\nLecture : {voir[0]}")
+        document = Document(
 
-         #   page_content=chunk["content"],
+            page_content=chunk["content"],
 
-          #  metadata={
-           #     "source": chunk["source"],
-            #    "chunk_id": chunk["id"],
-             #   "length": chunk["length"]
-            #}
-        #)
+            metadata={
+                "source": chunk["source"],
+               "chunk_id": chunk["id"],
+                "length": chunk["length"]
+            }
+        )
 
-        #documents.append(document)
+        documents.append(document)
 
 
-#print(f"\nTotal chunks : {len(documents)}")
+print(f"\nTotal chunks : {len(documents)}")
 
 # CREATION CHROMADB
 
-#print("\nCréation de ChromaDB...")
+print("\nCréation de ChromaDB...")
 
-#vectordb = Chroma.from_documents(
-#    documents=documents,
-#    embedding=embedding_function,
-##    persist_directory=DB_DIR
-#)
+vectordb = Chroma.from_documents(
+   documents=documents,
+   embedding=embedding_function,
+    persist_directory=DB_DIR
+)
 
 # Sauvegarde disque
-#vectordb.persist()
+vectordb.persist()
 
-#print("\n ChromaDB créée avec succès")
-#print(f" Sauvegardée dans : {DB_DIR}")
+print("\n ChromaDB créée avec succès")
+
+
+print(f" Sauvegardée dans : {DB_DIR}")
 
 
