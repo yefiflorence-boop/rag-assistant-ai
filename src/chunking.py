@@ -7,17 +7,15 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.documents import Document
 
 
-# =========================================
 # CONFIGURATION
-# =========================================
+
 
 INPUT_DIR = r"C:\Users\yefif\AI_Projets\rag-assistant-ai\data\output"
 OUTPUT_DIR = r"C:\Users\yefif\AI_Projets\rag-assistant-ai\data\chunks"
 
 
-# =========================================
 # NETTOYAGE TEXTE
-# =========================================
+
 
 def clean_text(text: str) -> str:
     """
@@ -55,9 +53,9 @@ def clean_text(text: str) -> str:
     return text
 
 
-# =========================================
+
 # CHUNKING
-# =========================================
+
 
 def create_splitter():
 
@@ -68,9 +66,8 @@ def create_splitter():
     )
 
 
-# =========================================
 # TRAITEMENT D'UN FICHIER
-# =========================================
+
 
 def process_file(file_path, splitter):
 
@@ -78,9 +75,9 @@ def process_file(file_path, splitter):
     loader = TextLoader(file_path, encoding="utf-8")
     docs = loader.load()
 
-    # =========================
+    
     # Nettoyage
-    # =========================
+    
     cleaned_docs = []
 
     for doc in docs:
@@ -94,14 +91,14 @@ def process_file(file_path, splitter):
 
         cleaned_docs.append(cleaned_doc)
 
-    # =========================
+   
     # Chunking
-    # =========================
+   
     chunks = splitter.split_documents(cleaned_docs)
 
-    # =========================
+   
     # Préparation sauvegarde
-    # =========================
+    
     output_data = []
 
     for i, chunk in enumerate(chunks):
@@ -116,9 +113,9 @@ def process_file(file_path, splitter):
     return output_data
 
 
-# =========================================
+
 # SAUVEGARDE
-# =========================================
+
 
 def save_chunks(data, output_file):
 
@@ -127,9 +124,7 @@ def save_chunks(data, output_file):
         json.dump(data, f, ensure_ascii=False, indent=2)
 
 
-# =========================================
 # PIPELINE PRINCIPAL
-# =========================================
 
 def main():
 
@@ -166,9 +161,8 @@ def main():
     print("\n✔ Chunking terminé")
 
 
-# =========================================
 # EXECUTION
-# =========================================
+
 
 if __name__ == "__main__":
 

@@ -179,9 +179,7 @@ def process_pdf(pdf_path):
     # Vérifie si PDF scanné
     scanned = is_scanned_pdf(pdf_path)
 
-    # =====================================================
     # CAS PDF SCANNÉ
-    # =====================================================
 
     if scanned:
 
