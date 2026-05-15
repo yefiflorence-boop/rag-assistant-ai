@@ -1,5 +1,5 @@
 import streamlit as st
-from rag_chat import (
+from chat import (
     init_rag,
     build_context,
     build_prompt
@@ -25,6 +25,12 @@ def load_rag():
 
 llm, vectordb = load_rag()
 
+# logo
+col1, col2, col3 = st.columns([1,2,1])
+
+with col2:
+    st.image("static/logo.png", width=150)
+
 
 # HEADER
 
@@ -32,7 +38,7 @@ llm, vectordb = load_rag()
 st.title(" Assistant documentaire ONEAD")
 
 st.caption(
-    "Posez vos questions sur les documents RH."
+    "Bienvenue sur ONEAD Assistant RH."
 )
 
 st.divider()
@@ -41,7 +47,12 @@ st.divider()
 
 if "messages" not in st.session_state:
 
-    st.session_state.messages = []
+    st.session_state.messages = [
+        {
+            "role": "assistant",
+            "content": "Bonjour 👋 Je suis l’assistant documentaire ONEAD. Posez-moi vos questions RH."
+        }
+    ]
 
 
 
