@@ -74,7 +74,7 @@ results = vectordb.similarity_search(
     query,
 
     # Nombre de résultats à retourner
-    k=3
+    k=5
 )
 
 
