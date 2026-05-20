@@ -11,8 +11,6 @@ import pytesseract
 from pdf2image import convert_from_path
 from tqdm import tqdm
 
-###
-
 # Dossier contenant les PDF
 INPUT_DIR = r"C:\Users\yefif\AI_Projets\rag-assistant-ai\data\raw"
 
@@ -22,12 +20,12 @@ OUTPUT_DIR = r"C:\Users\yefif\AI_Projets\rag-assistant-ai\data\output"
 # Langue OCR
 LANGUAGE = "fra"
 
-### FONCTION DE NETTOYAGE
+# FONCTION DE NETTOYAGE
 
 def clean_text(text):
-    """
-    Nettoie le texte extrait.
-    """
+
+    # Nettoie le texte extrait.
+    
 
     if not text:
         return ""
@@ -52,12 +50,12 @@ def clean_text(text):
 
     return text.strip()
 
-### EXTRACTION STANDARD
+# EXTRACTION STANDARD
 
 def extract_text_pymupdf(pdf_path):
-    """
-    Extraction rapide avec PyMuPDF.
-    """
+    
+    # Extraction rapide avec PyMuPDF.
+    
 
     text = []
 
@@ -78,12 +76,12 @@ def extract_text_pymupdf(pdf_path):
 
     return "\n".join(text)
 
-### EXTRACTION COMPLEXE 
+# EXTRACTION COMPLEXE 
 
 def extract_text_pdfplumber(pdf_path):
-    """
-    Extraction alternative pour PDF complexes.
-    """
+    
+    #Extraction alternative pour PDF complexes.
+    
 
     text = []
 
@@ -103,12 +101,12 @@ def extract_text_pdfplumber(pdf_path):
     return "\n".join(text)
 
 
-### OCR POUR PDF SCANNÉS
+# OCR POUR PDF SCANNÉS
 
 def extract_text_ocr(pdf_path):
-    """
-    OCR complet via Tesseract.
-    """
+    
+    # OCR complet via Tesseract
+    
 
     text = []
 
@@ -132,12 +130,12 @@ def extract_text_ocr(pdf_path):
 
     return "\n".join(text)
 
-### DÉTECTION PDF SCANNÉ
+# DÉTECTION PDF SCANNÉ
 
 def is_scanned_pdf(pdf_path):
-    """
-    Vérifie si le PDF contient du texte.
-    """
+    
+    # Vérifie si le PDF contient du texte.
+    
 
     try:
 
@@ -161,22 +159,22 @@ def is_scanned_pdf(pdf_path):
 
     return True
 
-### TRAITEMENT D'UN PDF
+# TRAITEMENT D'UN PDF
 
 def process_pdf(pdf_path):
 
-    filename = os.path.basename(pdf_path)
+    filename = os.path.basename(pdf_path) # Récupère le nom du fichier PDF 
 
     output_file = os.path.join(
         OUTPUT_DIR,
-        filename.replace(".pdf", ".txt")
+        filename.replace(".pdf", ".txt")         # Crée le chemin du fichier texte de sortie en remplaçant l'extension .pdf par .txt
     )
 
     print(f"\nTraitement : {filename}")
 
-    text = ""
+    text = ""            # Variable qui contiendra le texte extrait
 
-    # Vérifie si PDF scanné
+    # Vérifie si PDF scanné (image) ou s'il contient déjà du texte sélectionnable
     scanned = is_scanned_pdf(pdf_path)
 
     # CAS PDF SCANNÉ
@@ -185,7 +183,7 @@ def process_pdf(pdf_path):
 
         print("-> PDF scanné détecté")
 
-        text = extract_text_ocr(pdf_path)
+        text = extract_text_ocr(pdf_path)            # Extraction du texte avec OCR Tesseract
     
     # CAS PDF TEXTE
 
@@ -193,50 +191,50 @@ def process_pdf(pdf_path):
 
         print("-> PDF texte détecté")
 
-        # Extraction principale
-        text = extract_text_pymupdf(pdf_path)
+         # Extraction principale avec PyMuPDF
+        text = extract_text_pymupdf(pdf_path) 
 
-        # Fallback
+        # Vérifie si l'extraction a échoué ou contient trop peu de texte
         if len(text.strip()) < 100:
 
             print("-> Fallback pdfplumber")
 
-            text = extract_text_pdfplumber(pdf_path)
+            text = extract_text_pdfplumber(pdf_path)   # Deuxième méthode d'extraction
 
-    # Nettoyage
+    # Nettoyage du texte extrait
     cleaned_text = clean_text(text)
 
-    # Sauvegarde
+    # Sauvegarde du texte nettoyé dans un fichier .txt
     with open(output_file, "w", encoding="utf-8") as f:
 
         f.write(cleaned_text)
 
-    print(f"-> Sauvegardé : {output_file}")
+    print(f"-> Sauvegardé : {output_file}")     # Affiche le chemin du fichier sauvegardé
 
-### TRAITEMENT DU CORPUS
+# TRAITEMENT DU CORPUS
 
 def main():
 
-    # Liste des PDF
+    # Crée une liste contenant tous les fichiers PDF présents dans le dossier INPUT_DIR
     pdf_files = [
 
         os.path.join(INPUT_DIR, f)
 
         for f in os.listdir(INPUT_DIR)
 
-        if f.lower().endswith(".pdf")
+        if f.lower().endswith(".pdf") # Vérifie que le fichier se termine par .pdf .lower() permet d'accepter .PDF ou .Pdf
     ]
 
-    print(f"Nombre de PDF détectés : {len(pdf_files)}")
+    print(f"Nombre de PDF détectés : {len(pdf_files)}")   # Affiche le nombre total de PDF détectés
 
     # Traitement
-    for pdf_file in tqdm(pdf_files):
+    for pdf_file in tqdm(pdf_files):     # Parcourt tous les fichiers PDF en affichant une barre de progression
 
-        process_pdf(pdf_file)
+        process_pdf(pdf_file)            # Traite chaque PDF individuellement
 
     print("\nTraitement terminé.")
 
 # LANCEMENT 
-if __name__ == "__main__":
+if __name__ == "__main__":    # Vérifie que le fichier Python est exécuté directement
 
-    main()
+    main()                    # Lance la fonction principale du programme

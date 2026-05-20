@@ -1,10 +1,13 @@
-import os
-import json
-import re
+# IMPORTATION DES BIBLIOTHÈQUES 
 
-from langchain_community.document_loaders import TextLoader
-from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_core.documents import Document
+import os         # Permet de manipuler les fichiers et dossiers
+import json       # Permet de lire et écrire des fichiers JSON 
+import re         # Permet de faire du nettoyage de texte avec des expressions régulières 
+
+from langchain_community.document_loaders import TextLoader             # Charge des fichiers texte (.txt)
+from langchain_text_splitters import RecursiveCharacterTextSplitter     # Permet de découper le texte en morceaux (chunks) avec chevauchement
+from langchain_core.documents import Document                           # Représente un document avec son contenu et ses métadonnées
+
 
 
 # CONFIGURATION
@@ -16,12 +19,10 @@ OUTPUT_DIR = r"C:\Users\yefif\AI_Projets\rag-assistant-ai\data\chunks"
 
 # NETTOYAGE TEXTE
 
-
 def clean_text(text: str) -> str:
-    """
-    Nettoyage avancé du texte extrait des PDF
-    avant chunking / embeddings.
-    """
+    
+    # Nettoyage avancé du texte extrait des PDF avant chunking / embeddings.
+    
 
     if not text:
         return ""
@@ -58,11 +59,11 @@ def clean_text(text: str) -> str:
 
 
 def create_splitter():
-
-    return RecursiveCharacterTextSplitter(
-        chunk_size=500,
-        chunk_overlap=50,
-        separators=["\n\n", "\n", ".", " ", ""]
+    # Cette fonction crée un splitter pour découper les textes en chunks.
+    return RecursiveCharacterTextSplitter(  
+        chunk_size=500, 
+        chunk_overlap=50, # Découpage avec chevauchement de 50 caractères pour garder du contexte entre les chunks
+        separators=["\n\n", "\n", ".", " ", ""] # Découpage par paragraphes, puis lignes, puis phrases, puis espaces, puis caractères si nécessaire
     )
 
 
@@ -71,18 +72,16 @@ def create_splitter():
 
 def process_file(file_path, splitter):
 
-    # Charger document
+    # Charge le document texte avec l’encodage UTF-8.
     loader = TextLoader(file_path, encoding="utf-8")
-    docs = loader.load()
-
+    docs = loader.load()                                # Charge le contenu du fichier sous forme de documents LangChain.
     
-    # Nettoyage
-    
+    # Initialise une liste pour stocker les documents nettoyés.
     cleaned_docs = []
 
-    for doc in docs:
+    for doc in docs:                                    # Parcourt chaque document chargé.
 
-        cleaned_text = clean_text(doc.page_content)
+        cleaned_text = clean_text(doc.page_content)     # Nettoie le contenu textuel du document.
 
         cleaned_doc = Document(
             page_content=cleaned_text,
@@ -94,12 +93,12 @@ def process_file(file_path, splitter):
    
     # Chunking
    
-    chunks = splitter.split_documents(cleaned_docs)
+    chunks = splitter.split_documents(cleaned_docs)     # Découpe les documents nettoyés en plusieurs chunks.
 
    
     # Préparation sauvegarde
     
-    output_data = []
+    output_data = []                                    # Initialise une liste pour stocker les données des chunks.
 
     for i, chunk in enumerate(chunks):
 
@@ -107,7 +106,7 @@ def process_file(file_path, splitter):
             "id": i,
             "content": chunk.page_content,
             "source": os.path.basename(file_path),
-            "length": len(chunk.page_content)
+            "length": len(chunk.page_content) # Calcule la taille du chunk en caractères.
         })
 
     return output_data
@@ -131,23 +130,26 @@ def main():
     # créer dossier output si absent
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-    splitter = create_splitter()
-
+    splitter = create_splitter()             # Crée le splitter utilisé pour le chunking.
+    
+    # Récupère tous les fichiers texte du dossier INPUT_DIR.
     files = [
         f for f in os.listdir(INPUT_DIR)
         if f.endswith(".txt")
     ]
 
     print(f"{len(files)} fichiers détectés")
-
+    
+    # Parcourt chaque fichier texte.
     for file in files:
 
-        file_path = os.path.join(INPUT_DIR, file)
+        file_path = os.path.join(INPUT_DIR, file)   # Crée le chemin complet du fichier.
 
         print(f"\nTraitement : {file}")
 
-        chunks = process_file(file_path, splitter)
-
+        chunks = process_file(file_path, splitter)  # Traite le fichier pour obtenir les chunks.
+        
+         # Crée le chemin du fichier JSON de sortie.
         output_file = os.path.join(
             OUTPUT_DIR,
             file.replace(".txt", "_chunks.json")
@@ -162,7 +164,6 @@ def main():
 
 
 # EXECUTION
-
 
 if __name__ == "__main__":
 
