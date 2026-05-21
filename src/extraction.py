@@ -163,7 +163,7 @@ def is_scanned_pdf(pdf_path):
 
 def process_pdf(pdf_path):
 
-    filename = os.path.basename(pdf_path) # Récupère le nom du fichier PDF 
+    filename = os.path.basename(pdf_path)        # Récupère le nom du fichier PDF 
 
     output_file = os.path.join(
         OUTPUT_DIR,
@@ -172,7 +172,7 @@ def process_pdf(pdf_path):
 
     print(f"\nTraitement : {filename}")
 
-    text = ""            # Variable qui contiendra le texte extrait
+    text = ""                                    # Variable qui contiendra le texte extrait
 
     # Vérifie si PDF scanné (image) ou s'il contient déjà du texte sélectionnable
     scanned = is_scanned_pdf(pdf_path)
@@ -183,7 +183,7 @@ def process_pdf(pdf_path):
 
         print("-> PDF scanné détecté")
 
-        text = extract_text_ocr(pdf_path)            # Extraction du texte avec OCR Tesseract
+        text = extract_text_ocr(pdf_path)        # Extraction du texte avec OCR Tesseract
     
     # CAS PDF TEXTE
 
@@ -209,7 +209,7 @@ def process_pdf(pdf_path):
 
         f.write(cleaned_text)
 
-    print(f"-> Sauvegardé : {output_file}")     # Affiche le chemin du fichier sauvegardé
+    print(f"-> Sauvegardé : {output_file}")            # Affiche le chemin du fichier sauvegardé
 
 # TRAITEMENT DU CORPUS
 
@@ -222,19 +222,19 @@ def main():
 
         for f in os.listdir(INPUT_DIR)
 
-        if f.lower().endswith(".pdf") # Vérifie que le fichier se termine par .pdf .lower() permet d'accepter .PDF ou .Pdf
+        if f.lower().endswith(".pdf")                  # Vérifie que le fichier se termine par .pdf .lower() permet d'accepter .PDF ou .Pdf
     ]
 
-    print(f"Nombre de PDF détectés : {len(pdf_files)}")   # Affiche le nombre total de PDF détectés
+    print(f"Nombre de PDF détectés : {len(pdf_files)}")        # Affiche le nombre total de PDF détectés
 
     # Traitement
-    for pdf_file in tqdm(pdf_files):     # Parcourt tous les fichiers PDF en affichant une barre de progression
+    for pdf_file in tqdm(pdf_files):                           # Parcourt tous les fichiers PDF en affichant une barre de progression
 
-        process_pdf(pdf_file)            # Traite chaque PDF individuellement
+        process_pdf(pdf_file)                                  # Traite chaque PDF individuellement
 
     print("\nTraitement terminé.")
 
 # LANCEMENT 
-if __name__ == "__main__":    # Vérifie que le fichier Python est exécuté directement
+if __name__ == "__main__":                                     # Vérifie que le fichier Python est exécuté directement
 
-    main()                    # Lance la fonction principale du programme
+    main()                                                     # Lance la fonction principale du programme

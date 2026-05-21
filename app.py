@@ -8,24 +8,25 @@ from chat_context import (
 
 # CONFIGURATION DE LA PAGE
 
-
 st.set_page_config(
     page_title="ONEAD Assistant",
     page_icon="",
     layout="centered"
 )
 
+
 # LOAD RAG
 
-@st.cache_resource
+@st.cache_resource  # Évite de recharger ChromaDB à chaque interaction
 def load_rag():
-
     return init_rag()
 
 
 llm, vectordb = load_rag()
 
-# logo
+
+# LOGO
+
 col1, col2, col3 = st.columns([1,2,1])
 
 with col2:
@@ -33,7 +34,6 @@ with col2:
 
 
 # HEADER
-
 
 st.title(" Assistant documentaire ONEAD")
 
@@ -43,21 +43,21 @@ st.caption(
 
 st.divider()
 
+
 # MEMORY
 
+# Initialisation de l'historique avec le message d'accueil
 if "messages" not in st.session_state:
 
     st.session_state.messages = [
         {
             "role": "assistant",
-            "content": "Bonjour 👋 Je suis l’assistant documentaire ONEAD. Posez-moi vos questions RH."
+            "content": "Bonjour 👋 Je suis l'assistant documentaire ONEAD. Posez-moi vos questions RH."
         }
     ]
 
 
-
 # AFFICHAGE HISTORIQUE
-
 
 for message in st.session_state.messages:
 
@@ -66,25 +66,19 @@ for message in st.session_state.messages:
         st.markdown(message["content"])
 
 
-
 # INPUT USER
-
 
 question = st.chat_input(
     "Posez votre question..."
 )
 
 
-
-# QUESTION
-
+# PIPELINE RAG
 
 if question:
 
-
-    # MESSAGE USER
+    # Affichage du message utilisateur
     with st.chat_message("user"):
-
         st.markdown(question)
 
     st.session_state.messages.append({
@@ -92,44 +86,32 @@ if question:
         "content": question
     })
 
-
-    # SEARCH
+    # Retrieval : 5 passages les plus proches dans ChromaDB
     results = vectordb.similarity_search(
         question,
         k=5
     )
 
-
-    # CONTEXT
+    # Construction du contexte et du prompt augmenté
     context = build_context(results)
 
-
-    # PROMPT
     prompt = build_prompt(
         context,
         question
     )
 
-
-    # RESPONSE
+    # Génération et affichage de la réponse en streaming
     with st.chat_message("assistant"):
 
         response_placeholder = st.empty()
-
         full_response = ""
 
-
-        # STREAMING
         for chunk in llm.stream(prompt):
-
             full_response += chunk.content
-
             response_placeholder.markdown(full_response)
 
-
-    # SAVE MEMORY
+    # Sauvegarde dans l'historique de session
     st.session_state.messages.append({
-
         "role": "assistant",
         "content": full_response
     })

@@ -1,12 +1,12 @@
 # IMPORTATION DES BIBLIOTHÈQUES 
 
-import os         # Permet de manipuler les fichiers et dossiers
-import json       # Permet de lire et écrire des fichiers JSON 
-import re         # Permet de faire du nettoyage de texte avec des expressions régulières 
+import os                                                                        # Permet de manipuler les fichiers et dossiers
+import json                                                                      # Permet de lire et écrire des fichiers JSON 
+import re                                                                        # Permet de faire du nettoyage de texte avec des expressions régulières 
 
-from langchain_community.document_loaders import TextLoader             # Charge des fichiers texte (.txt)
-from langchain_text_splitters import RecursiveCharacterTextSplitter     # Permet de découper le texte en morceaux (chunks) avec chevauchement
-from langchain_core.documents import Document                           # Représente un document avec son contenu et ses métadonnées
+from langchain_community.document_loaders import TextLoader                      # Charge des fichiers texte (.txt)
+from langchain_text_splitters import RecursiveCharacterTextSplitter              # Permet de découper le texte en morceaux (chunks) avec chevauchement
+from langchain_core.documents import Document                                    # Représente un document avec son contenu et ses métadonnées
 
 
 
@@ -62,8 +62,8 @@ def create_splitter():
     # Cette fonction crée un splitter pour découper les textes en chunks.
     return RecursiveCharacterTextSplitter(  
         chunk_size=500, 
-        chunk_overlap=50, # Découpage avec chevauchement de 50 caractères pour garder du contexte entre les chunks
-        separators=["\n\n", "\n", ".", " ", ""] # Découpage par paragraphes, puis lignes, puis phrases, puis espaces, puis caractères si nécessaire
+        chunk_overlap=50,                                                        # Découpage avec chevauchement de 50 caractères pour garder du contexte entre les chunks
+        separators=["\n\n", "\n", ".", " ", ""]                                  # Découpage par paragraphes, puis lignes, puis phrases, puis espaces, puis caractères si nécessaire
     )
 
 
@@ -74,14 +74,14 @@ def process_file(file_path, splitter):
 
     # Charge le document texte avec l’encodage UTF-8.
     loader = TextLoader(file_path, encoding="utf-8")
-    docs = loader.load()                                # Charge le contenu du fichier sous forme de documents LangChain.
+    docs = loader.load()                                                         # Charge le contenu du fichier sous forme de documents LangChain.
     
     # Initialise une liste pour stocker les documents nettoyés.
     cleaned_docs = []
 
-    for doc in docs:                                    # Parcourt chaque document chargé.
+    for doc in docs:                                                             # Parcourt chaque document chargé.
 
-        cleaned_text = clean_text(doc.page_content)     # Nettoie le contenu textuel du document.
+        cleaned_text = clean_text(doc.page_content)                              # Nettoie le contenu textuel du document.
 
         cleaned_doc = Document(
             page_content=cleaned_text,
@@ -93,20 +93,20 @@ def process_file(file_path, splitter):
    
     # Chunking
    
-    chunks = splitter.split_documents(cleaned_docs)     # Découpe les documents nettoyés en plusieurs chunks.
+    chunks = splitter.split_documents(cleaned_docs)                              # Découpe les documents nettoyés en plusieurs chunks.
 
    
     # Préparation sauvegarde
     
-    output_data = []                                    # Initialise une liste pour stocker les données des chunks.
+    output_data = []                                                             # Initialise une liste pour stocker les données des chunks.
 
     for i, chunk in enumerate(chunks):
 
         output_data.append({
             "id": i,
-            "content": chunk.page_content,
-            "source": os.path.basename(file_path),
-            "length": len(chunk.page_content) # Calcule la taille du chunk en caractères.
+            "content": chunk.page_content,                                       # Récupère le texte contenu dans le chunk.
+            "source": os.path.basename(file_path),                               # Extrait uniquement le nom du fichier à partir du chemin complet.
+            "length": len(chunk.page_content)                                    # Calcule la taille du chunk en caractères.
         })
 
     return output_data
@@ -115,7 +115,7 @@ def process_file(file_path, splitter):
 
 # SAUVEGARDE
 
-
+# Sauvegarde les données des chunks dans un fichier JSON formaté en UTF-8.
 def save_chunks(data, output_file):
 
     with open(output_file, "w", encoding="utf-8") as f:
@@ -130,7 +130,7 @@ def main():
     # créer dossier output si absent
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-    splitter = create_splitter()             # Crée le splitter utilisé pour le chunking.
+    splitter = create_splitter()                                            # Crée le splitter utilisé pour le chunking.
     
     # Récupère tous les fichiers texte du dossier INPUT_DIR.
     files = [
@@ -143,11 +143,11 @@ def main():
     # Parcourt chaque fichier texte.
     for file in files:
 
-        file_path = os.path.join(INPUT_DIR, file)   # Crée le chemin complet du fichier.
+        file_path = os.path.join(INPUT_DIR, file)                           # Crée le chemin complet du fichier.
 
         print(f"\nTraitement : {file}")
 
-        chunks = process_file(file_path, splitter)  # Traite le fichier pour obtenir les chunks.
+        chunks = process_file(file_path, splitter)                          # Traite le fichier pour obtenir les chunks.
         
          # Crée le chemin du fichier JSON de sortie.
         output_file = os.path.join(

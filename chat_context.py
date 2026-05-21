@@ -11,7 +11,6 @@ from langchain_community.vectorstores import Chroma
 
 # ENV
 
-
 load_dotenv()
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
@@ -25,7 +24,6 @@ EMBEDDING_ENDPOINT = os.getenv("API_ENDPOINT_EMBEDDING")
 
 # DATABASE
 
-
 DB_DIR = r"C:\Users\yefif\AI_Projets\rag-assistant-ai\data\chroma_db"
 
 
@@ -33,6 +31,7 @@ DB_DIR = r"C:\Users\yefif\AI_Projets\rag-assistant-ai\data\chroma_db"
 
 
 def init_rag():
+    """Initialise le LLM et ChromaDB. Retourne (llm, vectordb)."""
 
     embedding_function = AzureOpenAIEmbeddings(
         model=EMBEDDING_MODEL,
@@ -50,7 +49,7 @@ def init_rag():
         azure_endpoint=CHAT_ENDPOINT,
         deployment_name=CHAT_MODEL,
         api_version="2024-02-15-preview",
-        temperature=0.2
+        temperature=0.2     # Réponses stables et factuelles
     )
 
     return llm, vectordb
@@ -60,6 +59,7 @@ def init_rag():
 
 
 def build_context(results):
+    """Formate les passages ChromaDB en bloc contexte pour le prompt."""
 
     context = "\n\n".join([
 
@@ -77,6 +77,7 @@ def build_context(results):
 
 
 def build_prompt(context, question):
+    """Assemble le prompt augmenté : question + contexte RAG."""
 
     prompt = f"""
 Tu es ONEAD Assistant, un assistant documentaire interne expert en procédures RH.
