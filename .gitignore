@@ -219,3 +219,5 @@ __marimo__/
 data/output/*
 data/chunks/*
 data/chroma_db/*
+# Feedback DRH : on versionne le dossier, pas les questions journalisées
+data/feedback/unanswered.jsonl

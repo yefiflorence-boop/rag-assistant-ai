@@ -1,0 +1,21 @@
+id,categorie,question,reponse_attendue,document_attendu,comportement_attendu
+Q01,nominal,Quels sont les principaux objectifs de la GPEC dans le manuel de l'ONEAD ?,Anticiper les besoins futurs en personnel et adapter les compétences aux évolutions des postes,1543744461-Manuel_de_proc_dures_RH_de_lONEAD.pdf,reponse_ancree
+Q02,nominal,Comment le manuel de l'ONEAD aborde-t-il la prévention des risques professionnels ?,Section hygiène et sécurité : cadre réglementaire principes de prévention et rôle du CHS,1543744461-Manuel_de_proc_dures_RH_de_lONEAD.pdf,reponse_ancree
+Q03,nominal,Pourquoi le SIRH est-il considéré comme essentiel dans le manuel de l'ONEAD ?,Automatiser les processus RH centraliser les données et améliorer le suivi administratif,1543744461-Manuel_de_proc_dures_RH_de_lONEAD.pdf,reponse_ancree
+Q04,nominal,Quelle est l'importance de l'évaluation annuelle dans le manuel de l'ONEAD ?,Apprécier les performances identifier les besoins en formation et gérer les carrières,1543744461-Manuel_de_proc_dures_RH_de_lONEAD.pdf,reponse_ancree
+Q05,nominal,Quelles sont les principales missions de la DRH dans le manuel du Ministère des PME ?,Mettre en œuvre la politique RH suivre les carrières gérer les effectifs et la formation,MANUEL DE PROCEDURE DRH PME.pdf,reponse_ancree
+Q06,nominal,Pourquoi le service courrier occupe-t-il une place importante dans la DRH du Ministère des PME ?,Porte d'entrée des documents : enregistrement classement transmission et archivage,MANUEL DE PROCEDURE DRH PME.pdf,reponse_ancree
+Q07,nominal,Comment le manuel du Ministère des PME traite-t-il la gestion des carrières ?,Suivi des situations administratives : promotions congés détachements et formations,MANUEL DE PROCEDURE DRH PME.pdf,reponse_ancree
+Q08,nominal,Quel rôle joue la formation dans le manuel de la DRH PME ?,Levier stratégique pour renforcer les capacités et suivre le plan de formation,MANUEL DE PROCEDURE DRH PME.pdf,reponse_ancree
+Q09,nominal,Pourquoi le manuel des actes administratifs RH insiste-t-il sur l'harmonisation des procédures ?,Uniformiser les pratiques pour garantir transparence rapidité et fiabilité,MANUEL DE PROCEDURES EN RESSOURCES HUMAINES.pdf,reponse_ancree
+Q10,nominal,Quels sont les principaux actes administratifs de début de carrière présentés dans le manuel ?,Certificat de première prise de service et arrêtés d'attente de nomination,MANUEL DE PROCEDURES EN RESSOURCES HUMAINES.pdf,reponse_ancree
+Q11,nominal,Quels principes de recrutement sont mis en avant dans le manuel du MCA ?,Transparence égalité des chances publicité des offres et sélection fondée sur les compétences,pub-2020001249601F-mca-human-resources-f.pdf,reponse_ancree
+Q12,nominal,Quel rôle joue le code de conduite dans le manuel du MCA ?,Normes éthiques : conflits d'intérêts comportements professionnels et confidentialité,pub-2020001249601F-mca-human-resources-f.pdf,reponse_ancree
+Q13,hors_corpus,Quel est le montant exact de la prime de transport à l'ONEAD en 2026 ?,,aucun,refus_controle
+Q14,hors_corpus,Quelle est la recette du pain au chocolat ?,,aucun,refus_controle
+Q15,hors_corpus,Qui a gagné la coupe du monde 2026 ?,,aucun,refus_controle
+Q16,hors_corpus,Quel est le numéro de téléphone personnel du DRH ?,,aucun,refus_controle
+Q17,ambigu,Comment fonctionne la gestion des absences à l'ONEAD ?,Procédure de gestion des absences : déclaration justification et suivi DRH,1543744461-Manuel_de_proc_dures_RH_de_lONEAD.pdf,reponse_ancree_ou_clarification
+Q18,ambigu,Congés ?,Procédure de gestion des congés annuels : demande validation et planification,1543744461-Manuel_de_proc_dures_RH_de_lONEAD.pdf,reponse_ancree_ou_clarification
+Q19,multi_doc,Comparez le rôle de la formation dans le manuel ONEAD et dans le manuel OIT ?,Formation comme levier stratégique dans les deux référentiels avec plans et suivi,1543744461-Manuel_de_proc_dures_RH_de_lONEAD.pdf;ORGANISATION INTERNATIONALE DU TRAVAIL.pdf,reponse_multi_sources
+Q20,multi_doc,Quelles différences entre l'évaluation annuelle ONEAD et l'évaluation des performances MCA ?,ONEAD : performances besoins en formation et carrières ; MCA : objectifs check-ins et récompenses,1543744461-Manuel_de_proc_dures_RH_de_lONEAD.pdf;pub-2020001249601F-mca-human-resources-f.pdf,reponse_multi_sources
