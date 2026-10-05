@@ -7,10 +7,8 @@ import pytesseract
 from pdf2image import convert_from_path
 from tqdm import tqdm
 
-# CONFIGURATION
+from src.config import RAW_DIR as INPUT_DIR, OUTPUT_DIR
 
-INPUT_DIR = Path(r"C:\Users\yefif\AI_Projets\rag-assistant-ai\data\raw")
-OUTPUT_DIR = Path(r"C:\Users\yefif\AI_Projets\rag-assistant-ai\data\output")
 LANGUAGE = "fra"
 MIN_CHARS = 30   # en dessous, la page est considérée comme scannée
 
@@ -71,8 +69,9 @@ def process_pdf(pdf_path):
 def main():
     pdf_files = sorted(
         p for p in INPUT_DIR.iterdir() if p.suffix.lower() == ".pdf"
-    )
+    ) if INPUT_DIR.exists() else []
 
+    print(f"Dossier brut : {INPUT_DIR}")
     print(f"Nombre de PDF détectés : {len(pdf_files)}")
 
     for pdf_file in tqdm(pdf_files):

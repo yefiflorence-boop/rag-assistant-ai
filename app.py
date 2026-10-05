@@ -4,17 +4,49 @@ import streamlit as st
 from chat_context import (
     init_rag,
     build_context,
-    build_prompt
+    build_prompt,
+    search_with_scores,
+    is_refusal,
+    log_unanswered,
+    get_manifest_info,
 )
+from src.config import DRH_CONTACT, MAX_SOURCES, TOP_K
 
 
 # CONFIGURATION
 
 # Les PDF doivent être dans le dossier static/docs/ (à côté de ce fichier).
-# Avec enableStaticServing = true, Streamlit les sert à l'adresse app/static/docs/<nom>.pdf
-DOCS_URL = "app/static/docs"
+# Avec enableStaticServing = true (.streamlit/config.toml), Streamlit les sert
+# à l'adresse /app/static/docs/<nom>.pdf
+DOCS_URL = "/app/static/docs"
 
-MAX_SOURCES = 3   # nombre maximum de documents affichés sous une réponse
+
+def sync_static_docs():
+    """Copie les PDF de data/raw/ vers static/docs/ pour le serving Streamlit.
+
+    Les sources indexées vivent dans data/raw/, mais Streamlit ne sert
+    que le dossier static/ via /app/static/. Sans cette synchro,
+    static/docs/ reste vide et les liens du chat mènent à un 404.
+    Idempotent : ne recopie que les fichiers absents ou de taille différente.
+    """
+    import shutil
+    from pathlib import Path
+
+    base = Path(__file__).resolve().parent
+    raw_dir = base / "data" / "raw"
+    static_dir = base / "static" / "docs"
+    static_dir.mkdir(parents=True, exist_ok=True)
+
+    if not raw_dir.exists():
+        return
+
+    for pdf in raw_dir.glob("*.pdf"):
+        dest = static_dir / pdf.name
+        if not dest.exists() or dest.stat().st_size != pdf.stat().st_size:
+            shutil.copy2(pdf, dest)
+
+
+sync_static_docs()
 
 
 # CONFIGURATION DE LA PAGE
@@ -55,8 +87,12 @@ def source_links(results):
         seen.add((name, page))
 
         # Ouvre le PDF directement à la bonne page grâce à #page=N
-        url = f"{DOCS_URL}/{quote(name)}#page={page}"
-        lines.append(f"- 📄 [{name} — page {page}]({url})")
+        if page and str(page) != "?":
+            url = f"{DOCS_URL}/{quote(str(name))}#page={page}"
+            lines.append(f"- 📄 [{name} — page {page}]({url})")
+        else:
+            url = f"{DOCS_URL}/{quote(str(name))}"
+            lines.append(f"- 📄 [{name}]({url})")
 
         if len(lines) >= MAX_SOURCES:
             break
@@ -64,9 +100,33 @@ def source_links(results):
     return "\n".join(lines)
 
 
+def drh_card():
+    """Carte de recours DRH formalisée (reco jury #3)."""
+    st.warning(
+        f"**Recours DRH** — {DRH_CONTACT['nom']}\n\n"
+        f"📧 {DRH_CONTACT['email']} | 📞 {DRH_CONTACT['tel']}\n\n"
+        f"🕒 {DRH_CONTACT['horaires']}\n\n"
+        "Votre question a été journalisée pour une revue par la DRH."
+    )
+
+
+# SIDEBAR : FRAÎCHEUR DE LA BASE (reco jury #2)
+
+manifest = get_manifest_info()
+with st.sidebar:
+    st.subheader("📚 Base documentaire")
+    if manifest:
+        st.write(f"**Mise à jour :** {manifest.get('date_indexation', '?')}")
+        st.write(f"**Documents :** {manifest.get('nb_documents', '?')}")
+        st.write(f"**Chunks :** {manifest.get('nb_chunks', '?')}")
+        st.caption(f"Modèle : {manifest.get('embedding_model', '?')}")
+    else:
+        st.caption("Base non versionnée — lancez `src/indexation.py` pour générer `data/manifest.json`.")
+
+
 # LOGO
 
-col1, col2, col3 = st.columns([1,2,1])
+col1, col2, col3 = st.columns([1, 2, 1])
 
 with col2:
     st.image("static/logo.png", width=150)
@@ -125,11 +185,8 @@ if question:
         "content": question
     })
 
-    # Retrieval : 5 passages les plus proches dans ChromaDB
-    results = vectordb.similarity_search(
-        question,
-        k=5
-    )
+    # Retrieval validé : passages filtrés par seuil de pertinence (reco jury #1)
+    results, scored = search_with_scores(vectordb, question, k=TOP_K)
 
     # Construction du contexte et du prompt augmenté
     context = build_context(results)
@@ -149,9 +206,22 @@ if question:
             full_response += chunk.content
             response_placeholder.markdown(full_response)
 
-        # Liens vers les documents sources (pas affichés si le modèle n'a rien trouvé)
-        if "Je n'ai pas trouvé" not in full_response:
-
+        # Refus contrôlé → carte DRH + journalisation (reco jury #3)
+        if is_refusal(full_response) or not results:
+            if not is_refusal(full_response):
+                # Sécurité : si aucun passage pertinent, on force le refus
+                # plutôt que de laisser le modèle halluciner.
+                from src.config import REFUSAL_MESSAGE
+                full_response = REFUSAL_MESSAGE
+                response_placeholder.markdown(full_response)
+            log_unanswered(question, scored)
+            drh_card()
+            full_response += (
+                f"\n\n**Recours DRH :** {DRH_CONTACT['nom']} — "
+                f"{DRH_CONTACT['email']} / {DRH_CONTACT['tel']}"
+            )
+        else:
+            # Liens vers les documents sources
             links = source_links(results)
 
             if links:

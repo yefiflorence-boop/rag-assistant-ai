@@ -219,3 +219,7 @@ __marimo__/
 data/output/*
 data/chunks/*
 data/chroma_db/*
+# Feedback DRH : on versionne le dossier, pas les questions journalisées
+data/feedback/unanswered.jsonl
+# PDF servis par Streamlit : régénérés au démarrage depuis data/raw/ (sync_static_docs)
+static/docs/*.pdf

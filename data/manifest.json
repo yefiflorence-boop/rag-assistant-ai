@@ -1,0 +1,41 @@
+{
+  "date_indexation": "2026-10-05",
+  "nb_documents": 5,
+  "documents": [
+    {
+      "fichier": "1543744461-Manuel_de_proc_dures_RH_de_lONEAD.pdf",
+      "sha256": "87fc6b436c177b77",
+      "taille_octets": 2034878
+    },
+    {
+      "fichier": "MANUEL DE PROCEDURE DRH PME.pdf",
+      "sha256": "c10d360966363c27",
+      "taille_octets": 7027069
+    },
+    {
+      "fichier": "MANUEL DE PROCEDURES EN RESSOURCES HUMAINES.pdf",
+      "sha256": "c0a105a44fe3c44c",
+      "taille_octets": 583499
+    },
+    {
+      "fichier": "ORGANISATION INTERNATIONALE DU TRAVAIL.pdf",
+      "sha256": "fbc6bad30ff201e0",
+      "taille_octets": 1744548
+    },
+    {
+      "fichier": "pub-2020001249601F-mca-human-resources-f.pdf",
+      "sha256": "5699285cad99c314",
+      "taille_octets": 3139107
+    }
+  ],
+  "nb_chunks": 5282,
+  "chunks_par_document": {
+    "1543744461-Manuel_de_proc_dures_RH_de_lONEAD.pdf": 216,
+    "MANUEL DE PROCEDURE DRH PME.pdf": 153,
+    "MANUEL DE PROCEDURES EN RESSOURCES HUMAINES.pdf": 157,
+    "ORGANISATION INTERNATIONALE DU TRAVAIL.pdf": 3170,
+    "pub-2020001249601F-mca-human-resources-f.pdf": 1586
+  },
+  "embedding_model": "text-embedding-3-large",
+  "db_dir": "data/chroma_db"
+}
