@@ -15,7 +15,7 @@ try:
 except ImportError:
     from langchain_community.vectorstores import Chroma
 
-from src.config import CHUNKS_DIR, DB_DIR, MANIFEST_PATH, RAW_DIR
+from src.config import BASE_DIR, CHUNKS_DIR, DB_DIR, MANIFEST_PATH, RAW_DIR
 
 
 # ENV
@@ -118,7 +118,8 @@ def main():
         "nb_chunks": len(documents),
         "chunks_par_document": per_doc_counts,
         "embedding_model": EMBEDDING_MODEL,
-        "db_dir": str(DB_DIR),
+        # Chemin relatif pour la portabilité entre machines (ne pas versionner un chemin absolu local).
+        "db_dir": str(DB_DIR.relative_to(BASE_DIR)) if DB_DIR.is_absolute() and BASE_DIR in DB_DIR.parents else str(DB_DIR),
     }
     MANIFEST_PATH.parent.mkdir(parents=True, exist_ok=True)
     MANIFEST_PATH.write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")

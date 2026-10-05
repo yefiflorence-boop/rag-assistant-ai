@@ -16,8 +16,37 @@ from src.config import DRH_CONTACT, MAX_SOURCES, TOP_K
 # CONFIGURATION
 
 # Les PDF doivent être dans le dossier static/docs/ (à côté de ce fichier).
-# Avec enableStaticServing = true, Streamlit les sert à l'adresse app/static/docs/<nom>.pdf
-DOCS_URL = "app/static/docs"
+# Avec enableStaticServing = true (.streamlit/config.toml), Streamlit les sert
+# à l'adresse /app/static/docs/<nom>.pdf
+DOCS_URL = "/app/static/docs"
+
+
+def sync_static_docs():
+    """Copie les PDF de data/raw/ vers static/docs/ pour le serving Streamlit.
+
+    Les sources indexées vivent dans data/raw/, mais Streamlit ne sert
+    que le dossier static/ via /app/static/. Sans cette synchro,
+    static/docs/ reste vide et les liens du chat mènent à un 404.
+    Idempotent : ne recopie que les fichiers absents ou de taille différente.
+    """
+    import shutil
+    from pathlib import Path
+
+    base = Path(__file__).resolve().parent
+    raw_dir = base / "data" / "raw"
+    static_dir = base / "static" / "docs"
+    static_dir.mkdir(parents=True, exist_ok=True)
+
+    if not raw_dir.exists():
+        return
+
+    for pdf in raw_dir.glob("*.pdf"):
+        dest = static_dir / pdf.name
+        if not dest.exists() or dest.stat().st_size != pdf.stat().st_size:
+            shutil.copy2(pdf, dest)
+
+
+sync_static_docs()
 
 
 # CONFIGURATION DE LA PAGE

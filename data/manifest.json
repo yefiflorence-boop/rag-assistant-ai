@@ -29,8 +29,13 @@
     }
   ],
   "nb_chunks": 5282,
-  "chunks_par_document": {},
-  "embedding_model": "text-embedding-3-large (à confirmer via indexation.py)",
-  "db_dir": "data/chroma_db",
-  "note": "manifeste provisoire offline — régénérez avec python src/indexation.py quand Azure est configuré"
+  "chunks_par_document": {
+    "1543744461-Manuel_de_proc_dures_RH_de_lONEAD.pdf": 216,
+    "MANUEL DE PROCEDURE DRH PME.pdf": 153,
+    "MANUEL DE PROCEDURES EN RESSOURCES HUMAINES.pdf": 157,
+    "ORGANISATION INTERNATIONALE DU TRAVAIL.pdf": 3170,
+    "pub-2020001249601F-mca-human-resources-f.pdf": 1586
+  },
+  "embedding_model": "text-embedding-3-large",
+  "db_dir": "data/chroma_db"
 }

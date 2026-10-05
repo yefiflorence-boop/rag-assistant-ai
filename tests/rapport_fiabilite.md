@@ -6,7 +6,7 @@ Questions testées : **20** — PASS : **16** / PARTIEL : **4** / FAIL : **0**
 
 - Date d'indexation : 2026-10-05
 - Documents : 5 | Chunks : 5282
-- Modèle d'embedding : text-embedding-3-large (à confirmer via indexation.py)
+- Modèle d'embedding : text-embedding-3-large
 
 ## Résultats par scénario (reco #4)
 
