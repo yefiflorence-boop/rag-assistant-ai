@@ -1,12 +1,14 @@
 import os
-import json
 
 from dotenv import load_dotenv
 
 from langchain_openai import AzureChatOpenAI
 from langchain_openai import AzureOpenAIEmbeddings
 
-from langchain_community.vectorstores import Chroma
+try:
+    from langchain_chroma import Chroma            # version recommandée
+except ImportError:
+    from langchain_community.vectorstores import Chroma
 
 
 # ENV
@@ -22,9 +24,13 @@ EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL")
 EMBEDDING_ENDPOINT = os.getenv("API_ENDPOINT_EMBEDDING")
 
 
-# DATABASE
+# DATABASE (même dossier que DB_DIR dans indexation.py)
+# Tu peux définir DB_DIR dans le .env pour changer de machine sans modifier le code.
 
-DB_DIR = r"C:\Users\yefif\AI_Projets\rag-assistant-ai\data\chroma_db"
+DB_DIR = os.getenv(
+    "DB_DIR",
+    r"C:\Users\yefif\AI_Projets\rag-assistant-ai\data\chroma_db"
+)
 
 
 # INITIALISATION
@@ -48,7 +54,7 @@ def init_rag():
         api_key=OPENAI_API_KEY,
         azure_endpoint=CHAT_ENDPOINT,
         deployment_name=CHAT_MODEL,
-        api_version="2024-02-15-preview",
+        api_version="2024-10-21",
         temperature=0.2     # Réponses stables et factuelles
     )
 
@@ -63,9 +69,9 @@ def build_context(results):
 
     context = "\n\n".join([
 
-        f"SOURCE: {os.path.splitext(doc.metadata.get('source', 'inconnue'))[0]}.pdf\n"
-        f"METADATA: {json.dumps(doc.metadata, ensure_ascii=False)}\n"
-        f"CONTENU:\n{doc.page_content}"
+        f"[Document : {doc.metadata.get('source', 'inconnu')} | "
+        f"page {doc.metadata.get('page', '?')}]\n"
+        f"{doc.page_content}"
 
         for doc in results
     ])
@@ -92,13 +98,12 @@ Tu es ONEAD Assistant, un assistant documentaire interne expert en procédures R
 - Longueur : entre 50 et 150 mots maximum, pas un mot de plus.
 - Ton : professionnel, direct, empathique.
 - Si la réponse comporte plusieurs étapes ou éléments : utilise une liste à puces (•).
-- Cite toujours la source (numéro de section ou titre du chapitre) en fin de réponse.
+- Ne cite PAS les sources et n'écris pas de lien : l'application affiche elle-même les documents et les pages sous ta réponse.
 - Zéro formule de politesse excessive, zéro répétition.
 
 ## FORMAT DE RÉPONSE ATTENDU
 [Réponse concise en 50-150 mots]
 [Liste à puces si plusieurs éléments]
-Source : nom_du_fichier.pdf [Titre de la section ou numéro du chapitre]
 
 CONTEXTE :
 {context}

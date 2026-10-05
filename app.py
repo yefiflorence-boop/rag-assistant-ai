@@ -1,9 +1,20 @@
+from urllib.parse import quote
+
 import streamlit as st
 from chat_context import (
     init_rag,
     build_context,
     build_prompt
 )
+
+
+# CONFIGURATION
+
+# Les PDF doivent être dans le dossier static/docs/ (à côté de ce fichier).
+# Avec enableStaticServing = true, Streamlit les sert à l'adresse app/static/docs/<nom>.pdf
+DOCS_URL = "app/static/docs"
+
+MAX_SOURCES = 3   # nombre maximum de documents affichés sous une réponse
 
 
 # CONFIGURATION DE LA PAGE
@@ -23,6 +34,34 @@ def load_rag():
 
 
 llm, vectordb = load_rag()
+
+
+# LIENS VERS LES SOURCES
+
+def source_links(results):
+    """Construit la liste des liens 'document, page N' (sans doublons)."""
+
+    seen = set()
+    lines = []
+
+    for doc in results:
+
+        name = doc.metadata.get("source")
+        page = doc.metadata.get("page")
+
+        if not name or (name, page) in seen:
+            continue
+
+        seen.add((name, page))
+
+        # Ouvre le PDF directement à la bonne page grâce à #page=N
+        url = f"{DOCS_URL}/{quote(name)}#page={page}"
+        lines.append(f"- 📄 [{name} — page {page}]({url})")
+
+        if len(lines) >= MAX_SOURCES:
+            break
+
+    return "\n".join(lines)
 
 
 # LOGO
@@ -110,7 +149,16 @@ if question:
             full_response += chunk.content
             response_placeholder.markdown(full_response)
 
-    # Sauvegarde dans l'historique de session
+        # Liens vers les documents sources (pas affichés si le modèle n'a rien trouvé)
+        if "Je n'ai pas trouvé" not in full_response:
+
+            links = source_links(results)
+
+            if links:
+                full_response += "\n\n**Sources :**\n" + links
+                response_placeholder.markdown(full_response)
+
+    # Sauvegarde dans l'historique de session (les liens sont inclus)
     st.session_state.messages.append({
         "role": "assistant",
         "content": full_response
