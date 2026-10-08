@@ -1,5 +1,5 @@
 {
-  "date_indexation": "2026-10-05",
+  "date_indexation": "2026-10-08",
   "nb_documents": 5,
   "documents": [
     {
@@ -28,14 +28,14 @@
       "taille_octets": 3139107
     }
   ],
-  "nb_chunks": 5282,
+  "nb_chunks": 3201,
   "chunks_par_document": {
-    "1543744461-Manuel_de_proc_dures_RH_de_lONEAD.pdf": 216,
-    "MANUEL DE PROCEDURE DRH PME.pdf": 153,
-    "MANUEL DE PROCEDURES EN RESSOURCES HUMAINES.pdf": 157,
-    "ORGANISATION INTERNATIONALE DU TRAVAIL.pdf": 3170,
-    "pub-2020001249601F-mca-human-resources-f.pdf": 1586
+    "1543744461-Manuel_de_proc_dures_RH_de_lONEAD.pdf": 142,
+    "MANUEL DE PROCEDURE DRH PME.pdf": 102,
+    "MANUEL DE PROCEDURES EN RESSOURCES HUMAINES.pdf": 102,
+    "ORGANISATION INTERNATIONALE DU TRAVAIL.pdf": 1890,
+    "pub-2020001249601F-mca-human-resources-f.pdf": 965
   },
   "embedding_model": "text-embedding-3-large",
-  "db_dir": "data/chroma_db"
+  "db_dir": "data\\chroma_db"
 }
