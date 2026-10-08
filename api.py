@@ -171,7 +171,14 @@ def serve_doc(filename: str):
         raise HTTPException(status_code=400, detail="Nom de fichier invalide")
     if not candidate.is_file():
         raise HTTPException(status_code=404, detail="Document introuvable")
-    return FileResponse(str(candidate), media_type="application/pdf", filename=candidate.name)
+    # "inline" (et non "attachment") : le navigateur ouvre le PDF dans un
+    # onglet au lieu de le télécharger. filename* RFC 5987 pour les accents.
+    disp = f"inline; filename*=UTF-8''{quote(candidate.name)}"
+    return FileResponse(
+        str(candidate),
+        media_type="application/pdf",
+        headers={"Content-Disposition": disp, "Accept-Ranges": "bytes"},
+    )
 
 
 @app.post("/api/chat", response_model=ChatResponse)

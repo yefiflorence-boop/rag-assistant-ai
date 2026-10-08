@@ -33,9 +33,25 @@ function renderText(content: string) {
 
 export default function ChatThread({ messages, loading, drh }: Props) {
   const endRef = useRef<HTMLDivElement>(null);
+  const nearBottom = useRef(true);
 
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    const onScroll = () => {
+      const dist =
+        document.documentElement.scrollHeight - (window.scrollY + window.innerHeight);
+      nearBottom.current = dist < 140;
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  useEffect(() => {
+    // Ne force le scroll que si l'utilisateur est déjà en bas : sinon le
+    // défilement fluide à chaque token se bat avec la lecture manuelle.
+    if (nearBottom.current) {
+      endRef.current?.scrollIntoView({ behavior: loading ? 'auto' : 'smooth', block: 'end' });
+    }
   }, [messages, loading]);
 
   return (
