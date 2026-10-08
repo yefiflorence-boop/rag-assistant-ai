@@ -104,26 +104,22 @@ export default function ChatThread({ messages, loading, drh }: Props) {
           {m.role === 'assistant' && m.sources.length > 0 && (
             <div className="msg-row assistant">
               <div className="msg-col">
-                <div className="src-title">RÉFÉRENCES DOCUMENTAIRES</div>
-                {m.sources.map((s) => (
-                  <div key={s.label} className="src-card">
-                    <div className="src-head">
-                      <button
-                        type="button"
-                        className="src-link"
-                        onClick={() => setViewing(s)}
-                        title="Lire le document à la page citée"
-                      >
-                        {s.name} <IconExternal />
-                      </button>
-                      <span className="page-badge" title="Page d’où est tirée la réponse">
-                        Page {s.page}
-                      </span>
-                    </div>
-                    {s.excerpt && <blockquote className="src-excerpt">{s.excerpt}…</blockquote>}
-                    <div className="src-sub">Cliquez pour lire le document à la page citée.</div>
-                  </div>
-                ))}
+                <div className="src-title">SOURCES</div>
+                <div className="src-list">
+                  {m.sources.map((s) => (
+                    <button
+                      key={s.label}
+                      type="button"
+                      className="src-line"
+                      onClick={() => setViewing(s)}
+                      title={`Lire ${s.name} à la page ${s.page}`}
+                    >
+                      <IconExternal />
+                      <span className="src-line-name">{s.name}</span>
+                      <span className="src-line-page">— page {s.page}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           )}

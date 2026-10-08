@@ -620,8 +620,54 @@ body {
   gap: 6px;
 }
 
-.src-card a:hover {
+.src-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.src-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--onead-border);
+  background: rgba(56, 189, 248, 0.05);
+  color: var(--onead-text);
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.src-line svg {
+  color: var(--onead-muted);
+  flex-shrink: 0;
+}
+
+.src-line:hover {
+  border-color: rgba(0, 174, 239, 0.45);
+}
+
+.src-line:hover .src-line-name {
+  color: var(--onead-accent);
   text-decoration: underline;
+}
+
+.src-line-name {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.src-line-page {
+  color: var(--onead-muted);
+  white-space: nowrap;
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
 }
 
 .src-link {
