@@ -573,6 +573,50 @@ body {
   margin-top: 6px;
 }
 
+.inline-src {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.cite-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  padding: 5px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--onead-border);
+  background: rgba(56, 189, 248, 0.06);
+  color: var(--onead-text);
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.cite-chip svg {
+  color: var(--onead-accent);
+  flex-shrink: 0;
+}
+
+.cite-chip:hover {
+  border-color: rgba(0, 174, 239, 0.5);
+}
+
+.cite-name {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cite-page {
+  color: var(--onead-accent);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
 .msg-row.user .msg-meta {
   text-align: right;
 }

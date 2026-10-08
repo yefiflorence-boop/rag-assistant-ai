@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ChatMessage, DrhContact, Source } from '../types';
-import { IconExternal } from './icons';
+import { IconDoc } from './icons';
 import DocViewer from './DocViewer';
 
 interface Props {
@@ -98,31 +98,25 @@ export default function ChatThread({ messages, loading, drh }: Props) {
               <div className="msg-meta">
                 {m.role === 'user' ? 'Vous' : 'ONEAD Assistant'} · {m.time}
               </div>
-            </div>
-          </div>
-
-          {m.role === 'assistant' && m.sources.length > 0 && (
-            <div className="msg-row assistant">
-              <div className="msg-col">
-                <div className="src-title">SOURCES</div>
-                <div className="src-list">
+              {m.role === 'assistant' && m.sources.length > 0 && (
+                <div className="inline-src">
                   {m.sources.map((s) => (
                     <button
                       key={s.label}
                       type="button"
-                      className="src-line"
+                      className="cite-chip"
                       onClick={() => setViewing(s)}
-                      title={`Lire ${s.name} à la page ${s.page}`}
+                      title={`${s.name} — page ${s.page} (cliquer pour lire)`}
                     >
-                      <IconExternal />
-                      <span className="src-line-name">{s.name}</span>
-                      <span className="src-line-page">— page {s.page}</span>
+                      <IconDoc size={13} />
+                      <span className="cite-name">{s.name}</span>
+                      <span className="cite-page">p. {s.page}</span>
                     </button>
                   ))}
                 </div>
-              </div>
+              )}
             </div>
-          )}
+          </div>
 
           {m.role === 'assistant' && m.refusal && drh && (
             <div className="msg-row assistant">
