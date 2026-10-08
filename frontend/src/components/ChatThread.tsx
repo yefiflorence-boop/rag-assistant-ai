@@ -95,9 +95,6 @@ export default function ChatThread({ messages, loading, drh }: Props) {
                   <span className="stream-caret" />
                 )}
               </div>
-              <div className="msg-meta">
-                {m.role === 'user' ? 'Vous' : 'ONEAD Assistant'} · {m.time}
-              </div>
               {m.role === 'assistant' && m.sources.length > 0 && (
                 <div className="inline-src">
                   {m.sources.map((s) => (
@@ -115,6 +112,9 @@ export default function ChatThread({ messages, loading, drh }: Props) {
                   ))}
                 </div>
               )}
+              <div className="msg-meta">
+                {m.role === 'user' ? 'Vous' : 'ONEAD Assistant'} · {m.time}
+              </div>
             </div>
           </div>
 
