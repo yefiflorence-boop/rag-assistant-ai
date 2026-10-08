@@ -1,11 +1,30 @@
-import { useEffect, useRef } from 'react';
-import type { ChatMessage, DrhContact } from '../types';
+import { useEffect, useRef, useState } from 'react';
+import type { ChatMessage, DrhContact, Source } from '../types';
 import { IconExternal } from './icons';
 
 interface Props {
   messages: ChatMessage[];
   loading: boolean;
   drh: DrhContact | null;
+}
+
+/** Ouvre le PDF dans un onglet de lecture, sans jamais déclencher de téléchargement :
+ *  le fichier est récupéré en blob (aucun Content-Disposition sur une URL blob),
+ *  puis ouvert avec le fragment #page=N conservé pour arriver à la page citée. */
+async function openDoc(s: Source, setOpening: (v: string | null) => void) {
+  setOpening(s.label);
+  try {
+    const res = await fetch(s.url.split('#')[0]);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const blob = await res.blob();
+    const objUrl = URL.createObjectURL(new Blob([blob], { type: 'application/pdf' }));
+    const frag = s.url.includes('#') ? s.url.slice(s.url.indexOf('#')) : '';
+    window.open(objUrl + frag, '_blank', 'noopener');
+  } catch {
+    window.open(s.url, '_blank', 'noopener'); // repli : navigation directe
+  } finally {
+    setOpening(null);
+  }
 }
 
 function renderText(content: string) {
@@ -34,6 +53,7 @@ function renderText(content: string) {
 export default function ChatThread({ messages, loading, drh }: Props) {
   const endRef = useRef<HTMLDivElement>(null);
   const nearBottom = useRef(true);
+  const [opening, setOpening] = useState<string | null>(null);
 
   useEffect(() => {
     const onScroll = () => {
@@ -86,11 +106,17 @@ export default function ChatThread({ messages, loading, drh }: Props) {
                 <div className="src-title">RÉFÉRENCES DOCUMENTAIRES</div>
                 {m.sources.map((s) => (
                   <div key={s.label} className="src-card">
-                    <a href={s.url} target="_blank" rel="noreferrer">
-                      {s.label} <IconExternal />
-                    </a>
+                    <button
+                      type="button"
+                      className="src-link"
+                      onClick={() => openDoc(s, setOpening)}
+                      disabled={opening !== null}
+                      title="Ouvrir le document à la page citée"
+                    >
+                      {opening === s.label ? 'Ouverture...' : s.label} <IconExternal />
+                    </button>
                     <div className="src-sub">
-                      Document consulté — cliquez pour ouvrir à la page citée.
+                      Document consulté — cliquez pour lire à la page citée.
                     </div>
                   </div>
                 ))}

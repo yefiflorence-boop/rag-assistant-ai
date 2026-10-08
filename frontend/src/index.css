@@ -624,6 +624,30 @@ body {
   text-decoration: underline;
 }
 
+.src-link {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--onead-accent);
+  font-weight: 600;
+  font-size: 12.8px;
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-align: left;
+}
+
+.src-link:hover:not(:disabled) {
+  text-decoration: underline;
+}
+
+.src-link:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
 .src-sub {
   color: var(--onead-muted);
   font-size: 12px;
