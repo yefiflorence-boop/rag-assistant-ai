@@ -3,6 +3,7 @@ export interface Source {
   page: string;
   url: string;
   label: string;
+  excerpt?: string;
 }
 
 export type Role = 'user' | 'assistant';

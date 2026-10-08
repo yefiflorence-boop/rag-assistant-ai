@@ -38,10 +38,15 @@ def extract_pages(pdf_path):
 
             # Page scannée : OCR de cette page seulement
             if len(text.strip()) < MIN_CHARS:
-                image = convert_from_path(
-                    str(pdf_path), first_page=i, last_page=i
-                )[0]
-                text = pytesseract.image_to_string(image, lang=LANGUAGE)
+                try:
+                    image = convert_from_path(
+                        str(pdf_path), first_page=i, last_page=i
+                    )[0]
+                    text = pytesseract.image_to_string(image, lang=LANGUAGE)
+                except Exception as exc:
+                    # OCR indisponible (tesseract/poppler absents) : on garde
+                    # le texte natif même maigre plutôt que de perdre le PDF.
+                    print(f"  Page {i} : OCR indisponible ({exc}) — texte natif conservé")
 
             pages.append({"page": i, "text": clean_text(text)})
 

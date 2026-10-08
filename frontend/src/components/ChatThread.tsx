@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ChatMessage, DrhContact, Source } from '../types';
 import { IconExternal } from './icons';
+import DocViewer from './DocViewer';
 
 interface Props {
   messages: ChatMessage[];
@@ -53,7 +54,7 @@ function renderText(content: string) {
 export default function ChatThread({ messages, loading, drh }: Props) {
   const endRef = useRef<HTMLDivElement>(null);
   const nearBottom = useRef(true);
-  const [opening, setOpening] = useState<string | null>(null);
+  const [viewing, setViewing] = useState<Source | null>(null);
 
   useEffect(() => {
     const onScroll = () => {
@@ -106,18 +107,21 @@ export default function ChatThread({ messages, loading, drh }: Props) {
                 <div className="src-title">RÉFÉRENCES DOCUMENTAIRES</div>
                 {m.sources.map((s) => (
                   <div key={s.label} className="src-card">
-                    <button
-                      type="button"
-                      className="src-link"
-                      onClick={() => openDoc(s, setOpening)}
-                      disabled={opening !== null}
-                      title="Ouvrir le document à la page citée"
-                    >
-                      {opening === s.label ? 'Ouverture...' : s.label} <IconExternal />
-                    </button>
-                    <div className="src-sub">
-                      Document consulté — cliquez pour lire à la page citée.
+                    <div className="src-head">
+                      <button
+                        type="button"
+                        className="src-link"
+                        onClick={() => setViewing(s)}
+                        title="Lire le document à la page citée"
+                      >
+                        {s.name} <IconExternal />
+                      </button>
+                      <span className="page-badge" title="Page d’où est tirée la réponse">
+                        Page {s.page}
+                      </span>
                     </div>
+                    {s.excerpt && <blockquote className="src-excerpt">{s.excerpt}…</blockquote>}
+                    <div className="src-sub">Cliquez pour lire le document à la page citée.</div>
                   </div>
                 ))}
               </div>
@@ -142,6 +146,7 @@ export default function ChatThread({ messages, loading, drh }: Props) {
         </div>
       ))}
       <div ref={endRef} />
+      {viewing && <DocViewer source={viewing} onClose={() => setViewing(null)} />}
     </section>
   );
 }

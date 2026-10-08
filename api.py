@@ -50,6 +50,7 @@ class Source(BaseModel):
     page: str
     url: str
     label: str
+    excerpt: str = ""
 
 
 class ChatResponse(BaseModel):
@@ -116,7 +117,8 @@ def _answer_sync(question: str, top_k: Optional[int] = None) -> ChatResponse:
             else:
                 url = f"/files/docs/{quote(name)}"
                 label = name
-            sources.append(Source(name=name, page=page, url=url, label=label))
+            excerpt = str(getattr(doc, "page_content", "") or "").strip()[:280]
+            sources.append(Source(name=name, page=page, url=url, label=label, excerpt=excerpt))
             if len(sources) >= MAX_SOURCES:
                 break
 
@@ -247,8 +249,10 @@ def chat_stream(req: ChatRequest):
                     continue
                 seen.add((name, page))
                 url = f"/files/docs/{quote(name)}#page={page}" if page != "?" else f"/files/docs/{quote(name)}"
+                excerpt = str(getattr(doc, "page_content", "") or "").strip()[:280]
                 sources.append({"name": name, "page": page, "url": url,
-                                "label": f"{name} — page {page}" if page != "?" else name})
+                                "label": f"{name} — page {page}" if page != "?" else name,
+                                "excerpt": excerpt})
                 if len(sources) >= MAX_SOURCES:
                     break
 

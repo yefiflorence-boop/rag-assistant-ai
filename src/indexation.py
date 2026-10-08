@@ -104,7 +104,7 @@ def main():
             ids=ids[i:i + BATCH_SIZE]
         )
 
-    print(f"\n✔ ChromaDB créée : {len(documents)} chunks dans {DB_DIR}")
+    print(f"\n[OK] ChromaDB creee : {len(documents)} chunks dans {DB_DIR}")
 
     # Manifeste de traçabilité (reco jury #2 : actualiser la base documentaire)
     raw_pdfs = sorted(RAW_DIR.glob("*.pdf")) if RAW_DIR.exists() else []
@@ -123,7 +123,7 @@ def main():
     }
     MANIFEST_PATH.parent.mkdir(parents=True, exist_ok=True)
     MANIFEST_PATH.write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(f"✔ Manifeste écrit : {MANIFEST_PATH}")
+    print(f"[OK] Manifeste ecrit : {MANIFEST_PATH}")
 
 
 if __name__ == "__main__":

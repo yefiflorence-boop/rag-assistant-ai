@@ -127,7 +127,7 @@ def main():
         print(f"Chunks sauvegardés : {output_file}")
         print(f"Nombre de chunks : {len(chunks)}")
 
-    print("\n✔ Chunking terminé")
+    print("\n[OK] Chunking termine")
 
 
 if __name__ == "__main__":
