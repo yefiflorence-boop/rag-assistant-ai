@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ChatMessage, DrhContact, Source } from '../types';
-import { IconDoc } from './icons';
 import DocViewer from './DocViewer';
 
 interface Props {
@@ -96,18 +95,17 @@ export default function ChatThread({ messages, loading, drh }: Props) {
                 )}
               </div>
               {m.role === 'assistant' && m.sources.length > 0 && (
-                <div className="inline-src">
+                <div className="inline-src-plain">
                   {m.sources.map((s) => (
                     <button
                       key={s.label}
                       type="button"
-                      className="cite-chip"
+                      className="src-plain"
                       onClick={() => setViewing(s)}
                       title={`${s.name} — page ${s.page} (cliquer pour lire)`}
                     >
-                      <IconDoc size={13} />
-                      <span className="cite-name">{s.name}</span>
-                      <span className="cite-page">p. {s.page}</span>
+                      Source : <span className="src-plain-name">{s.name}</span>
+                      <span className="src-plain-page"> — p. {s.page}</span>
                     </button>
                   ))}
                 </div>

@@ -573,11 +573,36 @@ body {
   margin-top: 6px;
 }
 
-.inline-src {
+.inline-src-plain {
   display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
+  flex-direction: column;
+  gap: 2px;
   margin-top: 6px;
+}
+
+.src-plain {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: 12.5px;
+  font-family: inherit;
+  color: var(--onead-muted);
+  text-align: left;
+}
+
+.src-plain-name {
+  color: var(--onead-accent);
+  font-weight: 600;
+}
+
+.src-plain:hover .src-plain-name {
+  text-decoration: underline;
+}
+
+.src-plain-page {
+  color: var(--onead-muted);
+  white-space: nowrap;
 }
 
 .cite-chip {
