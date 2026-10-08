@@ -185,7 +185,7 @@ body {
 
 .main {
   min-width: 0;
-  padding-bottom: 220px;
+  padding-bottom: 190px;
 }
 
 /* ---------- Sidebar ---------- */
@@ -396,6 +396,32 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+}
+
+.theme-mini {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.theme-mini-opt {
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--onead-border);
+  background: transparent;
+  color: var(--onead-muted);
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.theme-mini-opt.active {
+  background: rgba(0, 174, 239, 0.12);
+  border-color: rgba(0, 174, 239, 0.45);
+  color: var(--onead-primary);
+}
+
+.help-box {
+  margin-top: 12px;
 }
 
 /* ---------- Hero ---------- */

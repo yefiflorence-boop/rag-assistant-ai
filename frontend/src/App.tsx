@@ -197,11 +197,6 @@ export default function App() {
     setFilter('');
   }, []);
 
-  const totalMessages = useMemo(
-    () => conversations.reduce((n, c) => n + c.messages.length, 0),
-    [conversations],
-  );
-
   return (
     <div className="app">
       <Header />
@@ -213,12 +208,10 @@ export default function App() {
           onFilter={setFilter}
           onSelect={setActiveId}
           onNew={newConversation}
-          documents={documents}
+          docCount={documents.length}
           manifest={manifest}
-          totalMessages={totalMessages}
           theme={theme}
           onTheme={setTheme}
-          drh={drh}
         />
         <main className="main">
           {isHome ? (
@@ -226,7 +219,7 @@ export default function App() {
           ) : (
             <ChatThread messages={active.messages} loading={loading} drh={drh} />
           )}
-          <Composer loading={loading} onSend={sendQuestion} onNotice={setNotice} />
+          <Composer loading={loading} onSend={sendQuestion} />
         </main>
       </div>
       {notice && (

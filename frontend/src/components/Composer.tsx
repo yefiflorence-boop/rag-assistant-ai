@@ -1,13 +1,12 @@
 import { useState } from 'react';
-import { IconClip, IconMic, IconSearch, IconSend } from './icons';
+import { IconSend } from './icons';
 
 interface Props {
   loading: boolean;
   onSend: (text: string) => void;
-  onNotice: (msg: string) => void;
 }
 
-export default function Composer({ loading, onSend, onNotice }: Props) {
+export default function Composer({ loading, onSend }: Props) {
   const [value, setValue] = useState('');
 
   const submit = () => {
@@ -19,34 +18,6 @@ export default function Composer({ loading, onSend, onNotice }: Props) {
 
   return (
     <div className="composer-zone">
-      <div className="input-toolbar">
-        <button
-          type="button"
-          className="tool-btn"
-          title="Pièce jointe"
-          onClick={() => onNotice('Pièce jointe : fonction disponible prochainement.')}
-        >
-          <IconClip /> <span>Joindre</span>
-        </button>
-        <button
-          type="button"
-          className="tool-btn"
-          title="Recherche documentaire"
-          onClick={() => onNotice('Recherche documentaire activée sur la base ONEAD.')}
-        >
-          <IconSearch /> <span>Recherche</span>
-        </button>
-        <button
-          type="button"
-          className="tool-btn"
-          title="Microphone"
-          onClick={() => onNotice('Dictée vocale : fonction disponible prochainement.')}
-        >
-          <IconMic /> <span>Micro</span>
-        </button>
-        <span className="tool-hint">Réponses basées exclusivement sur vos documents ONEAD</span>
-      </div>
-
       <form
         className="composer"
         onSubmit={(e) => {
