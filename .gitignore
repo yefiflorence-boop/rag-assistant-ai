@@ -223,3 +223,7 @@ data/chroma_db/*
 data/feedback/unanswered.jsonl
 # PDF servis par Streamlit : régénérés au démarrage depuis data/raw/ (sync_static_docs)
 static/docs/*.pdf
+
+# Frontend React
+frontend/node_modules/
+frontend/dist/
