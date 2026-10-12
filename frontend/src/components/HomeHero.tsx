@@ -1,3 +1,4 @@
+import { OneadLogoStacked } from './OneadLogo';
 import { IconBook, IconDb, IconDocLines, IconSearch } from './icons';
 
 export interface Suggestion {
@@ -41,7 +42,7 @@ const CARDS: (Suggestion & { icon: React.ReactNode })[] = [
 export default function HomeHero({ onSuggest }: { onSuggest: (prompt: string) => void }) {
   return (
     <section className="hero">
-      <img src="/logo.png" alt="ONEAD" className="hero-logo" />
+      <OneadLogoStacked width={128} className="hero-logo" />
       <h2>Comment puis-je vous aider aujourd&apos;hui ?</h2>
       <p className="hero-sub">
         Interrogez votre base documentaire ONEAD en langage naturel et obtenez des réponses fiables

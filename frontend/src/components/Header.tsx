@@ -1,8 +1,10 @@
+import { OneadMark } from './OneadLogo';
+
 export default function Header() {
   return (
     <header className="onead-header">
       <div className="onead-brand">
-        <img src="/logo.png" alt="ONEAD" />
+        <OneadMark size={36} className="onead-brand-logo" />
         <div className="onead-brand-name">
           ONE<span>AD</span>
         </div>

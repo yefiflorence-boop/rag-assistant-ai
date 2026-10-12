@@ -83,13 +83,23 @@ body {
   min-width: 180px;
 }
 
-.onead-brand img {
+.onead-brand .onead-brand-logo,
+.onead-brand .onead-mark {
   height: 38px;
   width: auto;
-  border-radius: 10px;
-  background: #fff;
-  padding: 3px;
-  box-shadow: 0 4px 16px rgba(0, 174, 239, 0.35);
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+  filter: drop-shadow(0 3px 10px rgba(0, 174, 239, 0.35));
+  transition: transform 0.18s ease, filter 0.18s ease;
+}
+
+.onead-brand:hover .onead-brand-logo {
+  transform: translateY(-1px) scale(1.03);
+  filter: drop-shadow(0 5px 16px rgba(0, 200, 150, 0.4));
 }
 
 .onead-brand-name {
@@ -431,13 +441,35 @@ body {
   animation: fadeUp 0.5s ease both;
 }
 
-.hero-logo {
-  height: 64px;
-  border-radius: 16px;
-  background: #fff;
-  padding: 6px;
-  box-shadow: 0 12px 40px rgba(0, 174, 239, 0.3);
+.hero .hero-logo,
+.hero .onead-stacked {
+  height: 104px;
+  width: auto;
+  background: none;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
   margin-bottom: 18px;
+  filter: drop-shadow(0 10px 28px rgba(0, 174, 239, 0.28));
+  animation: onead-float 5.5s ease-in-out infinite;
+}
+
+@keyframes onead-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero .hero-logo,
+  .hero .onead-stacked {
+    animation: none;
+  }
 }
 
 .hero h2 {
