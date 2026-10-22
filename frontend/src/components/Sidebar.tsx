@@ -48,7 +48,7 @@ export default function Sidebar(p: Props) {
           >
             <IconChat />
             <span className="side-item-text">
-              {(c.id === p.activeId ? '● ' : '○ ') + c.title}
+              {c.title}
             </span>
           </button>
         ))}

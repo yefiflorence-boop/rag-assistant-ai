@@ -1,0 +1,65 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "API (FastAPI :8000)",
+      "type": "process",
+      "command": "${workspaceFolder}\\venv\\Scripts\\python.exe",
+      "args": [
+        "-m",
+        "uvicorn",
+        "api:app",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "8000",
+        "--reload"
+      ],
+      "options": { "cwd": "${workspaceFolder}" },
+      "presentation": { "panel": "dedicated", "clear": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "WEB (Vite :5173)",
+      "type": "shell",
+      "command": "npm run dev",
+      "options": { "cwd": "${workspaceFolder}\\frontend" },
+      "presentation": { "panel": "dedicated", "clear": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "Start full stack",
+      "detail": "Lance l'API (:8000) et le frontend Vite (:5173) en parallele.",
+      "dependsOn": ["API (FastAPI :8000)", "WEB (Vite :5173)"],
+      "dependsOrder": "parallel",
+      "group": { "kind": "build", "isDefault": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "Build frontend (dist)",
+      "detail": "tsc --noEmit && vite build -> frontend/dist (mode demo, 1 seule origine).",
+      "type": "shell",
+      "command": "npm run build",
+      "options": { "cwd": "${workspaceFolder}\\frontend" },
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Reindexer le corpus",
+      "detail": "extraction -> chunking -> indexation (a refaire si data/raw change).",
+      "type": "shell",
+      "command": "venv\\Scripts\\python.exe src/extraction.py && venv\\Scripts\\python.exe src/chunking.py && venv\\Scripts\\python.exe src/indexation.py",
+      "options": { "cwd": "${workspaceFolder}" },
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Evaluer la fiabilite (offline)",
+      "type": "shell",
+      "command": "venv\\Scripts\\python.exe tests/eval_rag.py",
+      "options": { "cwd": "${workspaceFolder}" },
+      "group": "test",
+      "problemMatcher": []
+    }
+  ]
+}

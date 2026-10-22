@@ -1,5 +1,9 @@
 import type { ChatDone, DocItem, DrhContact, Manifest } from '../types';
 
+// En dev Vite, '/api' est proxifié vers le backend (vite.config.ts).
+// VITE_API_URL permet de forcer l'URL absolue du backend si le proxy est inactif.
+const API_BASE = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, '') ?? '';
+
 async function json<T>(res: Response): Promise<T> {
   if (!res.ok) {
     const text = await res.text().catch(() => '');
@@ -9,24 +13,24 @@ async function json<T>(res: Response): Promise<T> {
 }
 
 export function fetchManifest(): Promise<Manifest> {
-  return fetch('/api/manifest').then(json<Manifest>);
+  return fetch(`${API_BASE}/api/manifest`).then(json<Manifest>);
 }
 
 export function fetchDocuments(): Promise<{ documents: DocItem[]; total: number }> {
-  return fetch('/api/documents').then(json<{ documents: DocItem[]; total: number }>);
+  return fetch(`${API_BASE}/api/documents`).then(json<{ documents: DocItem[]; total: number }>);
 }
 
 export function fetchDrh(): Promise<DrhContact> {
-  return fetch('/api/drh').then(json<DrhContact>);
+  return fetch(`${API_BASE}/api/drh`).then(json<DrhContact>);
 }
 
 export function fetchHealth(): Promise<{ status: string; rag_loaded: boolean }> {
-  return fetch('/api/health').then(json<{ status: string; rag_loaded: boolean }>);
+  return fetch(`${API_BASE}/api/health`).then(json<{ status: string; rag_loaded: boolean }>);
 }
 
 /** POST /api/chat non-streamé (secours si SSE indisponible). */
 export function postChat(question: string): Promise<ChatDone> {
-  return fetch('/api/chat', {
+  return fetch(`${API_BASE}/api/chat`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ question }),
@@ -38,7 +42,7 @@ export function postChat(question: string): Promise<ChatDone> {
  * Appelle onToken à chaque delta, résout avec le payload final.
  */
 export function streamChat(question: string, onToken: (delta: string) => void): Promise<ChatDone> {
-  return fetch('/api/chat/stream', {
+  return fetch(`${API_BASE}/api/chat/stream`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ question }),

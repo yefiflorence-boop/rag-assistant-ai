@@ -55,6 +55,11 @@ export default function ChatThread({ messages, loading, drh }: Props) {
   const nearBottom = useRef(true);
   const [viewing, setViewing] = useState<Source | null>(null);
 
+  // Pendant le streaming, seul le dernier message (le placeholder de la
+  // réponse en cours) doit afficher l'animation d'écriture. Sans ça, le
+  // message de bienvenue clignote comme s'il écrivait lui aussi.
+  const streamingId = loading && messages.length > 0 ? messages[messages.length - 1].id : null;
+
   useEffect(() => {
     const onScroll = () => {
       const dist =
@@ -82,15 +87,17 @@ export default function ChatThread({ messages, loading, drh }: Props) {
             <div className="msg-col">
               <div className={`bubble ${m.role === 'user' ? 'user-b' : 'assist-b'}`}>
                 {m.content === '' && m.role === 'assistant' ? (
-                  <span className="typing" aria-label="Réponse en cours">
-                    <span />
-                    <span />
-                    <span />
-                  </span>
+                  m.id === streamingId ? (
+                    <span className="typing" aria-label="Réponse en cours">
+                      <span />
+                      <span />
+                      <span />
+                    </span>
+                  ) : null
                 ) : (
                   renderText(m.content)
                 )}
-                {loading && m.role === 'assistant' && m.content !== '' && (
+                {m.id === streamingId && m.role === 'assistant' && m.content !== '' && (
                   <span className="stream-caret" />
                 )}
               </div>

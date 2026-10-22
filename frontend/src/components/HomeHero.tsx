@@ -44,10 +44,6 @@ export default function HomeHero({ onSuggest }: { onSuggest: (prompt: string) =>
     <section className="hero">
       <OneadLogoStacked width={128} className="hero-logo" />
       <h2>Comment puis-je vous aider aujourd&apos;hui ?</h2>
-      <p className="hero-sub">
-        Interrogez votre base documentaire ONEAD en langage naturel et obtenez des réponses fiables
-        basées sur les connaissances de l&apos;entreprise.
-      </p>
       <div className="card-grid">
         {CARDS.map((c) => (
           <article key={c.key} className="onead-card">

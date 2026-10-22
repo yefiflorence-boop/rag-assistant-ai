@@ -1,25 +1,25 @@
 # Rapport de fiabilité — ONEAD Assistant RAG
 
-Questions testées : **20** — PASS : **16** / PARTIEL : **4** / FAIL : **0**
+Questions testées : **20** — PASS : **15** / PARTIEL : **5** / FAIL : **0**
 
 ## Traçabilité de la base (reco #2)
 
-- Date d'indexation : 2026-10-05
-- Documents : 5 | Chunks : 5282
+- Date d'indexation : 2026-10-08
+- Documents : 5 | Chunks : 3201
 - Modèle d'embedding : text-embedding-3-large
 
 ## Résultats par scénario (reco #4)
 
 | ID | Catégorie | Statut | Détail | Passages |
 |----|-----------|--------|--------|----------|
-| Q01 | nominal | PARTIEL | sources trouvées : ['organisation internationale du travail.pdf', 'pub-202000124 | 5 |
+| Q01 | nominal | PARTIEL | sources trouvées : ['organisation internationale du travail.pdf'] | 5 |
 | Q02 | nominal | PASS | source attendue retrouvée (1543744461-Manuel_de_proc_dures_RH_de_lONEAD.pdf) | 5 |
-| Q03 | nominal | PARTIEL | sources trouvées : ['organisation internationale du travail.pdf', 'pub-202000124 | 5 |
-| Q04 | nominal | PASS | source attendue retrouvée (1543744461-Manuel_de_proc_dures_RH_de_lONEAD.pdf) | 5 |
+| Q03 | nominal | PARTIEL | sources trouvées : ['manuel de procedures en ressources humaines.pdf', 'organisa | 5 |
+| Q04 | nominal | PARTIEL | sources trouvées : ['organisation internationale du travail.pdf', 'pub-202000124 | 5 |
 | Q05 | nominal | PASS | source attendue retrouvée (MANUEL DE PROCEDURE DRH PME.pdf) | 5 |
 | Q06 | nominal | PASS | source attendue retrouvée (MANUEL DE PROCEDURE DRH PME.pdf) | 5 |
 | Q07 | nominal | PASS | source attendue retrouvée (MANUEL DE PROCEDURE DRH PME.pdf) | 5 |
-| Q08 | nominal | PARTIEL | sources trouvées : ['1543744461-manuel_de_proc_dures_rh_de_lonead.pdf', 'manuel  | 5 |
+| Q08 | nominal | PARTIEL | sources trouvées : ['organisation internationale du travail.pdf'] | 5 |
 | Q09 | nominal | PASS | source attendue retrouvée (MANUEL DE PROCEDURES EN RESSOURCES HUMAINES.pdf) | 5 |
 | Q10 | nominal | PASS | source attendue retrouvée (MANUEL DE PROCEDURES EN RESSOURCES HUMAINES.pdf) | 5 |
 | Q11 | nominal | PASS | source attendue retrouvée (pub-2020001249601F-mca-human-resources-f.pdf) | 5 |

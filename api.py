@@ -17,15 +17,41 @@ from pathlib import Path
 from typing import Any, Optional
 from urllib.parse import quote
 
+from contextlib import asynccontextmanager
+import os
+import sys
+import threading
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import BaseModel, Field
+from dotenv import load_dotenv
+
+load_dotenv()  # .env charge avant la lecture de SERVE_FRONTEND (import tardif sinon)
 
 BASE_DIR = Path(__file__).resolve().parent
 RAW_DIR = BASE_DIR / "data" / "raw"
+DIST_DIR = BASE_DIR / "frontend" / "dist"
 
-app = FastAPI(title="ONEAD Assistant IA — API", version="1.0.0")
+
+def _warm_rag() -> None:
+    """Pré-charge LLM + ChromaDB en tâche de fond (évite le démarrage à froid sur la 1re question)."""
+    try:
+        _rag()
+        print("[warmup] Base RAG prechargee (ChromaDB + Azure OpenAI).", file=sys.stderr, flush=True)
+    except Exception as exc:
+        # Ne jamais rester muet : un rag_loaded:false sans explication est inexploitable.
+        print(f"[warmup] Echec du pre-chargement RAG : {exc}", file=sys.stderr, flush=True)
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    threading.Thread(target=_warm_rag, daemon=True).start()
+    yield
+
+
+app = FastAPI(title="ONEAD Assistant IA — API", version="1.0.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -132,12 +158,9 @@ def _answer_sync(question: str, top_k: Optional[int] = None) -> ChatResponse:
 
 @app.get("/api/health")
 def health():
-    try:
-        _rag()
-        loaded = True
-    except Exception:
-        loaded = False
-    return {"status": "ok", "rag_loaded": loaded}
+    # Rapide et non-bloquant : ne déclenche PAS le chargement RAG
+    # (le pré-chargement se fait en tâche de fond au démarrage).
+    return {"status": "ok", "rag_loaded": _rag.cache_info().currsize > 0}
 
 
 @app.get("/api/manifest")
@@ -260,4 +283,34 @@ def chat_stream(req: ChatRequest):
                    "meta": {"nb_passages": len(results)}}
         yield f"event: done\ndata: {json.dumps(payload)}\n\n"
 
-    return StreamingResponse(gen(), media_type="text/event-stream")
+    return StreamingResponse(
+        gen(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "X-Accel-Buffering": "no",
+            "Connection": "keep-alive",
+        },
+    )
+
+
+# ---------------------------------------------------------------------------
+# Mode "une seule origine" (SERVE_FRONTEND=1) :
+# FastAPI sert aussi le build React (frontend/dist), ce qui donne une seule URL
+# pour l'UI et l'API -> http://127.0.0.1:8000 (plus de proxy Vite, plus de CORS).
+# En dev (sans SERVE_FRONTEND), le frontend reste servi par Vite sur :5173.
+# ---------------------------------------------------------------------------
+if os.getenv("SERVE_FRONTEND", "").strip().lower() in {"1", "true", "yes", "on"}:
+    if DIST_DIR.is_dir():
+        from fastapi.staticfiles import StaticFiles
+
+        app.mount("/", StaticFiles(directory=str(DIST_DIR), html=True), name="spa")
+    else:
+        @app.get("/")
+        def _spa_missing():
+            return {
+                "detail": (
+                    "frontend/dist absent : lancer 'npm run build' dans frontend/ "
+                    "ou demarrer avec SERVE_FRONTEND=1 apres un build."
+                )
+            }
