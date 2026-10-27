@@ -3,16 +3,28 @@ import { useId } from 'react';
 interface MarkProps {
   size?: number;
   className?: string;
+  /** Ajoute un éclat lumineux qui balaie la goutte (usage hero). */
+  shine?: boolean;
 }
+
+/** Contour de la goutte (partagé entre le tracé et le masque d'éclat). */
+const DROP_D =
+  'M24 2.5C22.6 11.5 9.5 26.2 9.5 37.6a14.5 14.5 0 0 0 29 0C38.5 26.2 25.4 11.5 24 2.5Z';
+
+/** Contour de la feuille verte imbriquée. */
+const LEAF_D =
+  'M31.5 23.5c-1.2 4.6-6.3 8.6-6.3 14.1a7.6 7.6 0 0 0 15.2 0c0-5.5-6.5-9.9-8.9-14.1Z';
 
 /**
  * ONEAD — goutte bleue + feuille verte imbriquée, 100% vectoriel,
  * fond transparent, sans encadrement. Lisible en thème sombre ET clair.
  */
-export function OneadMark({ size = 38, className = '' }: MarkProps) {
+export function OneadMark({ size = 38, className = '', shine = false }: MarkProps) {
   const uid = useId().replace(/[^a-zA-Z0-9]/g, '');
   const dropId = `onead-drop-${uid}`;
   const leafId = `onead-leaf-${uid}`;
+  const clipId = `onead-clip-${uid}`;
+  const shineId = `onead-shine-${uid}`;
 
   return (
     <svg
@@ -35,13 +47,23 @@ export function OneadMark({ size = 38, className = '' }: MarkProps) {
           <stop offset="0" stopColor="#34D399" />
           <stop offset="1" stopColor="#009E77" />
         </linearGradient>
+        {shine && (
+          <>
+            <clipPath id={clipId}>
+              <path d={DROP_D} />
+              <path d={LEAF_D} />
+            </clipPath>
+            <linearGradient id={shineId} x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stopColor="#FFFFFF" stopOpacity="0" />
+              <stop offset="0.5" stopColor="#FFFFFF" stopOpacity="0.72" />
+              <stop offset="1" stopColor="#FFFFFF" stopOpacity="0" />
+            </linearGradient>
+          </>
+        )}
       </defs>
 
       {/* Goutte principale */}
-      <path
-        d="M24 2.5C22.6 11.5 9.5 26.2 9.5 37.6a14.5 14.5 0 0 0 29 0C38.5 26.2 25.4 11.5 24 2.5Z"
-        fill={`url(#${dropId})`}
-      />
+      <path d={DROP_D} fill={`url(#${dropId})`} />
       {/* Reflet vertical — éclat d'eau */}
       <path
         d="M17.2 30.5c-1.9 2.6-3 5.7-3 8.6 0 4.4 2.5 8.1 6.1 9.9-4.6-2.9-6-11.3-3.1-18.5Z"
@@ -51,15 +73,28 @@ export function OneadMark({ size = 38, className = '' }: MarkProps) {
       <ellipse cx="18.6" cy="36.4" rx="2.1" ry="4.4" fill="#FFFFFF" opacity="0.55" transform="rotate(-12 18.6 36.4)" />
 
       {/* Feuille / goutte verte imbriquée */}
-      <path
-        d="M31.5 23.5c-1.2 4.6-6.3 8.6-6.3 14.1a7.6 7.6 0 0 0 15.2 0c0-5.5-6.5-9.9-8.9-14.1Z"
-        fill={`url(#${leafId})`}
-      />
+      <path d={LEAF_D} fill={`url(#${leafId})`} />
       <path
         d="M32.9 29.5c-.7 2.6-3 4.7-3 7.4 0 1.9 1 3.5 2.6 4.3-2-1.8-2.4-6.7.4-11.7Z"
         fill="#FFFFFF"
         opacity="0.35"
       />
+
+      {/* Éclat balayant la silhouette (animé en CSS : .mark-shine) */}
+      {shine && (
+        <g clipPath={`url(#${clipId})`}>
+          <g className="mark-shine">
+            <rect
+              x="-32"
+              y="-16"
+              width="18"
+              height="92"
+              fill={`url(#${shineId})`}
+              transform="skewX(-15)"
+            />
+          </g>
+        </g>
+      )}
     </svg>
   );
 }

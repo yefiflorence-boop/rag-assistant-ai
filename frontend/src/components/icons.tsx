@@ -103,6 +103,34 @@ export const IconPlus = ({ size = 16 }: IconProps) =>
     <line x1="5" y1="12" x2="19" y2="12" />
   </>);
 
+export const IconSparkles = ({ size = 18 }: IconProps) =>
+  base(size, <>
+    <path d="M12 3l1.9 4.7L18.6 9.6 13.9 11.5 12 16.2 10.1 11.5 5.4 9.6 10.1 7.7 12 3z" />
+    <path d="M18.5 14.6l.8 1.9 1.9.8-1.9.8-.8 1.9-.8-1.9-1.9-.8 1.9-.8.8-1.9z" />
+  </>);
+
+export const IconSun = ({ size = 18 }: IconProps) =>
+  base(size, <>
+    <circle cx="12" cy="12" r="4" />
+    <line x1="12" y1="2" x2="12" y2="4.5" />
+    <line x1="12" y1="19.5" x2="12" y2="22" />
+    <line x1="4.2" y1="4.2" x2="6" y2="6" />
+    <line x1="18" y1="18" x2="19.8" y2="19.8" />
+    <line x1="2" y1="12" x2="4.5" y2="12" />
+    <line x1="19.5" y1="12" x2="22" y2="12" />
+    <line x1="4.2" y1="19.8" x2="6" y2="18" />
+    <line x1="18" y1="6" x2="19.8" y2="4.2" />
+  </>);
+
+export const IconMoon = ({ size = 18 }: IconProps) =>
+  base(size, <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />);
+
+export const IconClose = ({ size = 18 }: IconProps) =>
+  base(size, <>
+    <line x1="6" y1="6" x2="18" y2="18" />
+    <line x1="18" y1="6" x2="6" y2="18" />
+  </>);
+
 export const IconExternal = ({ size = 13 }: IconProps) =>
   base(size, <>
     <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />

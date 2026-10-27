@@ -61,14 +61,16 @@ export default function ChatThread({ messages, loading, drh }: Props) {
   const streamingId = loading && messages.length > 0 ? messages[messages.length - 1].id : null;
 
   useEffect(() => {
+    // Le défilement se fait dans .stage-scroll (la scène de la carte) quand
+    // elle existe, sinon sur la page entière : les deux cas partagent la même
+    // formule « distance depuis le bas ».
+    const el: Element = endRef.current?.closest('.stage-scroll') ?? document.documentElement;
     const onScroll = () => {
-      const dist =
-        document.documentElement.scrollHeight - (window.scrollY + window.innerHeight);
-      nearBottom.current = dist < 140;
+      nearBottom.current = el.scrollHeight - el.scrollTop - el.clientHeight < 140;
     };
-    window.addEventListener('scroll', onScroll, { passive: true });
+    el.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
-    return () => window.removeEventListener('scroll', onScroll);
+    return () => el.removeEventListener('scroll', onScroll);
   }, []);
 
   useEffect(() => {

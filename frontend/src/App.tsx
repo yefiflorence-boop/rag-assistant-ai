@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import Header from './components/Header';
-import Sidebar from './components/Sidebar';
+import Rail, { type PanelSection } from './components/Rail';
+import SidePanel from './components/SidePanel';
+import TopBar from './components/TopBar';
 import HomeHero from './components/HomeHero';
 import ChatThread from './components/ChatThread';
 import Composer from './components/Composer';
@@ -42,12 +43,15 @@ function makeConversation(): Conversation {
 
 export default function App() {
   const [theme, setTheme] = useState<Theme>(() => {
+    // Le design « pastel glass » est pensé d'abord en clair : seul un choix
+    // explicite de l'utilisateur (ou son historique) bascule en sombre.
     const saved = localStorage.getItem('onead-theme');
-    return saved === 'clair' ? 'clair' : 'sombre';
+    return saved === 'sombre' ? 'sombre' : 'clair';
   });
   const [conversations, setConversations] = useState<Conversation[]>(() => [makeConversation()]);
   const [activeId, setActiveId] = useState<string>(() => conversations[0].id);
   const [filter, setFilter] = useState('');
+  const [panel, setPanel] = useState<PanelSection | null>(null);
   const [loading, setLoading] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const [documents, setDocuments] = useState<DocItem[]>([]);
@@ -195,32 +199,54 @@ export default function App() {
     setConversations((prev) => [...prev, c]);
     setActiveId(c.id);
     setFilter('');
+    setPanel(null);
   }, []);
 
   return (
     <div className="app">
-      <Header />
-      <div className="layout">
-        <Sidebar
-          conversations={conversations}
-          activeId={activeId}
-          filter={filter}
-          onFilter={setFilter}
-          onSelect={setActiveId}
+      <div className="frame">
+        <Rail
+          section={panel}
+          onSection={setPanel}
           onNew={newConversation}
-          docCount={documents.length}
-          manifest={manifest}
           theme={theme}
           onTheme={setTheme}
         />
-        <main className="main">
-          {isHome ? (
-            <HomeHero onSuggest={sendQuestion} />
-          ) : (
-            <ChatThread messages={active.messages} loading={loading} drh={drh} />
-          )}
-          <Composer loading={loading} onSend={sendQuestion} />
-        </main>
+        <div className="stage">
+          <TopBar onNew={newConversation} />
+          <main className="stage-scroll">
+            {isHome ? (
+              <HomeHero onSuggest={sendQuestion} />
+            ) : (
+              <ChatThread messages={active.messages} loading={loading} drh={drh} />
+            )}
+          </main>
+          <Composer
+            loading={loading}
+            onSend={sendQuestion}
+            docCount={documents.length}
+            onHelp={() => setPanel(panel === 'reglages' ? null : 'reglages')}
+          />
+        </div>
+        {panel && (
+          <SidePanel
+            section={panel}
+            onClose={() => setPanel(null)}
+            conversations={conversations}
+            activeId={activeId}
+            filter={filter}
+            onFilter={setFilter}
+            onSelect={(id) => {
+              setActiveId(id);
+              setPanel(null);
+            }}
+            onNew={newConversation}
+            documents={documents}
+            manifest={manifest}
+            theme={theme}
+            onTheme={setTheme}
+          />
+        )}
       </div>
       {notice && (
         <div className="toast" role="status">
