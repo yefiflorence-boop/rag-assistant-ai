@@ -224,8 +224,6 @@ export default function App() {
           <Composer
             loading={loading}
             onSend={sendQuestion}
-            docCount={documents.length}
-            onHelp={() => setPanel(panel === 'reglages' ? null : 'reglages')}
           />
         </div>
         {panel && (

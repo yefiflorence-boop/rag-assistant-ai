@@ -15,9 +15,6 @@ export default function TopBar({ onNew }: { onNew: () => void }) {
         </span>
         <span className="btn-pill-label">Nouvelle conversation</span>
       </button>
-      <span className="avatar" title="Profil utilisateur">
-        AD
-      </span>
     </header>
   );
 }

@@ -1,15 +1,13 @@
 import { useState } from 'react';
-import { IconDb, IconHelp, IconSend } from './icons';
+import { IconSend } from './icons';
 
 interface Props {
   loading: boolean;
   onSend: (text: string) => void;
-  docCount: number;
-  onHelp: () => void;
 }
 
-/** Carte de saisie en bas de la scène : zone de texte + barre d'outils. */
-export default function Composer({ loading, onSend, docCount, onHelp }: Props) {
+/** Carte de saisie en bas de la scène : zone de texte + bouton d'envoi. */
+export default function Composer({ loading, onSend }: Props) {
   const [value, setValue] = useState('');
 
   const submit = () => {
@@ -44,19 +42,7 @@ export default function Composer({ loading, onSend, docCount, onHelp }: Props) {
         />
 
         <div className="composer-bar">
-          <div className="composer-tools">
-            <span className="pill-info" title="Corpus indexé disponible pour les réponses">
-              <IconDb size={14} />
-              Base : {docCount} document{docCount > 1 ? 's' : ''}
-            </span>
-            <button type="button" className="pill-ghost" onClick={onHelp}>
-              <IconHelp size={14} />
-              Aide
-            </button>
-          </div>
-
           <div className="composer-actions">
-            <span className="kbd-hint">Entrée pour envoyer</span>
             <button
               type="submit"
               className="send-pill"
